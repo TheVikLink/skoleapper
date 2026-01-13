@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Vamos a practicar! - Spansk 9. trinn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --warm-orange: #FF6B35;
+            --sunny-yellow: #FFD166;
+            --deep-red: #D62828;
+            --forest-green: #2D6A4F;
+            --cream: #FFF8F0;
+            --dark-brown: #3D2914;
+            --soft-shadow: 0 4px 20px rgba(61, 41, 20, 0.15);
+            --card-shadow: 0 8px 32px rgba(61, 41, 20, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #FFF8F0 0%, #FFE8D6 50%, #FFDDC1 100%);
+            min-height: 100vh;
+            color: var(--dark-brown);
+            padding-bottom: 40px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--warm-orange), var(--deep-red));
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: var(--soft-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '🌶️ 🍊 🌮 🥘 🍷';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            opacity: 0.3;
+            white-space: nowrap;
+        }
+
+        h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            padding: 20px;
+            background: var(--cream);
+            border-bottom: 3px solid var(--sunny-yellow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            background: white;
+            color: var(--dark-brown);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .nav-btn.active {
+            background: var(--warm-orange);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .nav-btn[data-section="tener"] { border-left: 4px solid var(--deep-red); }
+        .nav-btn[data-section="restaurante"] { border-left: 4px solid var(--forest-green); }
+        .nav-btn[data-section="verbos"] { border-left: 4px solid var(--sunny-yellow); }
+        .nav-btn[data-section="quiz"] { border-left: 4px solid var(--warm-orange); }
+
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 24px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255, 107, 53, 0.1);
+        }
+
+        h2 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.6rem;
+            color: var(--deep-red);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.2rem;
+            color: var(--forest-green);
+            margin: 20px 0 12px;
+        }
+
+        /* Flashcard styles */
+        .flashcard-container {
+            perspective: 1000px;
+            margin: 20px 0;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 200px;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--sunny-yellow), #FFE066);
+            border: 3px solid var(--warm-orange);
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, var(--forest-green), #40916C);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-word {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .flashcard-hint {
+            font-size: 0.9rem;
+            margin-top: 10px;
+            opacity: 0.8;
+        }
+
+        .flashcard-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .flashcard-btn {
+            font-family: 'Fredoka', sans-serif;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .flashcard-btn.prev, .flashcard-btn.next {
+            background: var(--warm-orange);
+            color: white;
+        }
+
+        .flashcard-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .flashcard-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-weight: 600;
+            color: var(--dark-brown);
+            margin-top: 15px;
+        }
+
+        /* Verb table styles */
+        .verb-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 15px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .verb-table th {
+            background: var(--deep-red);
+            color: white;
+            padding: 14px 12px;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+        }
+
+        .verb-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+
+        .verb-table tr:nth-child(even) td {
+            background: #FFF8F0;
+        }
+
+        .verb-table tr:hover td {
+            background: var(--sunny-yellow);
+            transition: background 0.2s;
+        }
+
+        .verb-infinitive {
+            font-weight: 700;
+            color: var(--deep-red);
+        }
+
+        /* Practice input styles */
+        .practice-area {
+            background: #FFF8F0;
+            border-radius: 16px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .practice-question {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .practice-spanish {
+            color: var(--deep-red);
+            font-style: italic;
+        }
+
+        .practice-input {
+            width: 100%;
+            padding: 14px 18px;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-family: 'Nunito', sans-serif;
+            transition: border-color 0.2s;
+        }
+
+        .practice-input:focus {
+            outline: none;
+            border-color: var(--warm-orange);
+        }
+
+        .practice-input.correct {
+            border-color: var(--forest-green);
+            background: #E8F5E9;
+        }
+
+        .practice-input.incorrect {
+            border-color: var(--deep-red);
+            background: #FFEBEE;
+        }
+
+        .check-btn {
+            font-family: 'Fredoka', sans-serif;
+            background: var(--forest-green);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.2s;
+        }
+
+        .check-btn:hover {
+            background: #1B4332;
+            transform: translateY(-2px);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feedback.correct {
+            background: #C8E6C9;
+            color: #1B5E20;
+        }
+
+        .feedback.incorrect {
+            background: #FFCDD2;
+            color: #B71C1C;
+        }
+
+        /* Quiz styles */
+        .quiz-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .quiz-progress {
+            background: #eee;
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .quiz-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--warm-orange), var(--sunny-yellow));
+            border-radius: 5px;
+            transition: width 0.4s ease;
+        }
+
+        .quiz-question {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            font-family: 'Nunito', sans-serif;
+            padding: 16px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .quiz-option:hover:not(:disabled) {
+            border-color: var(--warm-orange);
+            background: #FFF8F0;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--warm-orange);
+            background: var(--sunny-yellow);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--forest-green);
+            background: #C8E6C9;
+        }
+
+        .quiz-option.wrong {
+            border-color: var(--deep-red);
+            background: #FFCDD2;
+        }
+
+        .quiz-option:disabled {
+            cursor: not-allowed;
+        }
+
+        .quiz-result {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .quiz-score {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 4rem;
+            color: var(--warm-orange);
+            margin-bottom: 10px;
+        }
+
+        .quiz-message {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+        }
+
+        .restart-btn {
+            font-family: 'Fredoka', sans-serif;
+            background: var(--warm-orange);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .restart-btn:hover {
+            background: var(--deep-red);
+            transform: scale(1.05);
+        }
+
+        /* Restaurant dialog styles */
+        .dialog-container {
+            background: linear-gradient(135deg, #2D6A4F, #40916C);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            color: white;
+        }
+
+        .dialog-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dialog-line {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin: 10px 0;
+        }
+
+        .dialog-role {
+            font-weight: 700;
+            color: var(--sunny-yellow);
+            margin-right: 8px;
+        }
+
+        .dialog-spanish {
+            font-style: italic;
+            margin-bottom: 5px;
+        }
+
+        .dialog-norwegian {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Vocab grid */
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .vocab-item {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+            border-left: 4px solid var(--warm-orange);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .vocab-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .vocab-spanish {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.2rem;
+            color: var(--deep-red);
+            margin-bottom: 5px;
+        }
+
+        .vocab-norwegian {
+            color: var(--dark-brown);
+            font-size: 0.95rem;
+        }
+
+        /* Tips box */
+        .tips-box {
+            background: linear-gradient(135deg, var(--sunny-yellow), #FFE066);
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin: 20px 0;
+            border-left: 5px solid var(--warm-orange);
+        }
+
+        .tips-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            nav {
+                gap: 8px;
+                padding: 15px;
+            }
+            
+            .nav-btn {
+                padding: 10px 18px;
+                font-size: 0.9rem;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .flashcard {
+                height: 180px;
+            }
+
+            .verb-table {
+                font-size: 0.85rem;
+            }
+
+            .verb-table th, .verb-table td {
+                padding: 8px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>¡Vamos a practicar!</h1>
+        <p class="subtitle">Spansk 9. trinn - Kapittel 4</p>
+    </header>
+
+    <nav>
+        <button class="nav-btn active" data-section="tener">🌡️ Uttrykk med TENER</button>
+        <button class="nav-btn" data-section="restaurante">🍽️ På restaurant</button>
+        <button class="nav-btn" data-section="verbos">📚 Verbbøying</button>
+        <button class="nav-btn" data-section="quiz">🎯 Quiz</button>
+    </nav>
+
+    <main>
+        <!-- TENER Section -->
+        <section id="tener" class="active">
+            <div class="card">
+                <h2>🔥 Uttrykk med TENER</h2>
+                <p>På spansk bruker vi <strong>tener</strong> (å ha) i mange uttrykk der vi på norsk bruker <strong>å være</strong>. Klikk på kortet for å se oversettelsen!</p>
+                
+                <div class="flashcard-container">
+                    <div class="flashcard" id="tener-flashcard">
+                        <div class="flashcard-front">
+                            <div class="flashcard-word" id="tener-spanish"></div>
+                            <div class="flashcard-hint">Klikk for å se norsk</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-word" id="tener-norwegian"></div>
+                            <div class="flashcard-hint">Klikk for å snu tilbake</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flashcard-nav">
+                    <button class="flashcard-btn prev" id="tener-prev">← Forrige</button>
+                    <button class="flashcard-btn next" id="tener-next">Neste →</button>
+                </div>
+                <p class="progress-text" id="tener-progress"></p>
+            </div>
+
+            <div class="card">
+                <h3>📝 Øv deg! Skriv den spanske setningen:</h3>
+                <div class="practice-area">
+                    <p class="practice-question" id="tener-practice-question"></p>
+                    <input type="text" class="practice-input" id="tener-practice-input" placeholder="Skriv på spansk...">
+                    <button class="check-btn" id="tener-check">Sjekk svaret</button>
+                    <div class="feedback" id="tener-feedback"></div>
+                </div>
+                <button class="flashcard-btn next" id="tener-new-question" style="margin-top: 10px;">Ny oppgave</button>
+            </div>
+
+            <div class="tips-box">
+                <div class="tips-title">💡 Huskeregel</div>
+                <p>Tenk: "Jeg <strong>har</strong> sult" i stedet for "Jeg <strong>er</strong> sulten". På spansk bruker du TENER for fysiske tilstander og følelser!</p>
+            </div>
+        </section>
+
+        <!-- Restaurant Section -->
+        <section id="restaurante">
+            <div class="card">
+                <h2>🍽️ På restauranten</h2>
+                <p>Her lærer du ordene du trenger for å bestille mat og drikke på en spansk restaurant!</p>
+
+                <h3>🥤 Drikke - Las bebidas</h3>
+                <div class="vocab-grid" id="bebidas-grid"></div>
+
+                <h3>🍲 Mat - La comida</h3>
+                <div class="vocab-grid" id="comida-grid"></div>
+
+                <h3>🗣️ Nyttige uttrykk</h3>
+                <div class="vocab-grid" id="expresiones-grid"></div>
+            </div>
+
+            <div class="card">
+                <h2>🎭 Eksempel på dialog</h2>
+                <div class="dialog-container">
+                    <div class="dialog-title">🍷 En el restaurante</div>
+                    
+                    <div class="dialog-line">
+                        <span class="dialog-role">Camarero:</span>
+                        <div class="dialog-spanish">¡Buenas tardes! ¿Qué desean beber?</div>
+                        <div class="dialog-norwegian">God ettermiddag! Hva ønsker dere å drikke?</div>
+                    </div>
+                    
+                    <div class="dialog-line">
+                        <span class="dialog-role">Cliente:</span>
+                        <div class="dialog-spanish">Para mí, una limonada, por favor.</div>
+                        <div class="dialog-norwegian">For meg, en limonade, takk.</div>
+                    </div>
+                    
+                    <div class="dialog-line">
+                        <span class="dialog-role">Camarero:</span>
+                        <div class="dialog-spanish">¿Y para comer? ¿Ya han decidido?</div>
+                        <div class="dialog-norwegian">Og for å spise? Har dere bestemt dere?</div>
+                    </div>
+                    
+                    <div class="dialog-line">
+                        <span class="dialog-role">Cliente:</span>
+                        <div class="dialog-spanish">De primer plato, quiero la sopa. Y de segundo, el pollo con patatas.</div>
+                        <div class="dialog-norwegian">Som forrett vil jeg ha suppa. Og som hovedrett, kyllingen med poteter.</div>
+                    </div>
+                    
+                    <div class="dialog-line">
+                        <span class="dialog-role">Camarero:</span>
+                        <div class="dialog-spanish">Muy bien. ¿Desean postre?</div>
+                        <div class="dialog-norwegian">Veldig bra. Ønsker dere dessert?</div>
+                    </div>
+                    
+                    <div class="dialog-line">
+                        <span class="dialog-role">Cliente:</span>
+                        <div class="dialog-spanish">Sí, un helado de chocolate, por favor.</div>
+                        <div class="dialog-norwegian">Ja, en sjokoladeis, takk.</div>
+                    </div>
+                    
+                    <div class="dialog-line">
+                        <span class="dialog-role">Cliente:</span>
+                        <div class="dialog-spanish">La cuenta, por favor.</div>
+                        <div class="dialog-norwegian">Regningen, takk.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🎤 Øv på restaurantfraser</h3>
+                <div class="practice-area">
+                    <p class="practice-question" id="rest-practice-question"></p>
+                    <input type="text" class="practice-input" id="rest-practice-input" placeholder="Skriv på spansk...">
+                    <button class="check-btn" id="rest-check">Sjekk svaret</button>
+                    <div class="feedback" id="rest-feedback"></div>
+                </div>
+                <button class="flashcard-btn next" id="rest-new-question" style="margin-top: 10px;">Ny oppgave</button>
+            </div>
+        </section>
+
+        <!-- Verbos Section -->
+        <section id="verbos">
+            <div class="card">
+                <h2>📚 Verbbøying i presens</h2>
+                <p>Disse fire verbene er <strong>uregelrette</strong> og må pugges! Legg merke til vokalendringene.</p>
+
+                <h3>🔴 PODER (å kunne) - o → ue</h3>
+                <table class="verb-table">
+                    <tr>
+                        <th>Person</th>
+                        <th>Spansk</th>
+                        <th>Norsk</th>
+                    </tr>
+                    <tr><td>Yo</td><td class="verb-infinitive">puedo</td><td>jeg kan</td></tr>
+                    <tr><td>Tú</td><td>puedes</td><td>du kan</td></tr>
+                    <tr><td>Él/Ella/Usted</td><td>puede</td><td>han/hun kan</td></tr>
+                    <tr><td>Nosotros</td><td>podemos</td><td>vi kan</td></tr>
+                    <tr><td>Vosotros</td><td>podéis</td><td>dere kan</td></tr>
+                    <tr><td>Ellos/Ustedes</td><td>pueden</td><td>de kan</td></tr>
+                </table>
+
+                <h3>🟢 TENER (å ha) - e → ie</h3>
+                <table class="verb-table">
+                    <tr>
+                        <th>Person</th>
+                        <th>Spansk</th>
+                        <th>Norsk</th>
+                    </tr>
+                    <tr><td>Yo</td><td class="verb-infinitive">tengo</td><td>jeg har</td></tr>
+                    <tr><td>Tú</td><td>tienes</td><td>du har</td></tr>
+                    <tr><td>Él/Ella/Usted</td><td>tiene</td><td>han/hun har</td></tr>
+                    <tr><td>Nosotros</td><td>tenemos</td><td>vi har</td></tr>
+                    <tr><td>Vosotros</td><td>tenéis</td><td>dere har</td></tr>
+                    <tr><td>Ellos/Ustedes</td><td>tienen</td><td>de har</td></tr>
+                </table>
+
+                <h3>🟡 PREFERIR (å foretrekke) - e → ie</h3>
+                <table class="verb-table">
+                    <tr>
+                        <th>Person</th>
+                        <th>Spansk</th>
+                        <th>Norsk</th>
+                    </tr>
+                    <tr><td>Yo</td><td class="verb-infinitive">prefiero</td><td>jeg foretrekker</td></tr>
+                    <tr><td>Tú</td><td>prefieres</td><td>du foretrekker</td></tr>
+                    <tr><td>Él/Ella/Usted</td><td>prefiere</td><td>han/hun foretrekker</td></tr>
+                    <tr><td>Nosotros</td><td>preferimos</td><td>vi foretrekker</td></tr>
+                    <tr><td>Vosotros</td><td>preferís</td><td>dere foretrekker</td></tr>
+                    <tr><td>Ellos/Ustedes</td><td>prefieren</td><td>de foretrekker</td></tr>
+                </table>
+
+                <h3>🔵 SALIR (å dra/gå ut) - uregelmessig yo</h3>
+                <table class="verb-table">
+                    <tr>
+                        <th>Person</th>
+                        <th>Spansk</th>
+                        <th>Norsk</th>
+                    </tr>
+                    <tr><td>Yo</td><td class="verb-infinitive">salgo</td><td>jeg drar/går ut</td></tr>
+                    <tr><td>Tú</td><td>sales</td><td>du drar</td></tr>
+                    <tr><td>Él/Ella/Usted</td><td>sale</td><td>han/hun drar</td></tr>
+                    <tr><td>Nosotros</td><td>salimos</td><td>vi drar</td></tr>
+                    <tr><td>Vosotros</td><td>salís</td><td>dere drar</td></tr>
+                    <tr><td>Ellos/Ustedes</td><td>salen</td><td>de drar</td></tr>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3>✍️ Øv på verbbøying</h3>
+                <div class="practice-area">
+                    <p class="practice-question" id="verb-practice-question"></p>
+                    <input type="text" class="practice-input" id="verb-practice-input" placeholder="Skriv verbformen...">
+                    <button class="check-btn" id="verb-check">Sjekk svaret</button>
+                    <div class="feedback" id="verb-feedback"></div>
+                </div>
+                <button class="flashcard-btn next" id="verb-new-question" style="margin-top: 10px;">Ny oppgave</button>
+            </div>
+
+            <div class="tips-box">
+                <div class="tips-title">💡 Tips for å huske</div>
+                <p><strong>Nosotros</strong> og <strong>vosotros</strong> beholder alltid den vanlige vokalen! Vokalendringen skjer bare når vokalen er i en <em>trykksterk</em> stavelse.</p>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz">
+            <div class="quiz-container" id="quiz-container">
+                <div class="quiz-progress">
+                    <div class="quiz-progress-bar" id="quiz-progress-bar"></div>
+                </div>
+                <div id="quiz-content">
+                    <p class="quiz-question" id="quiz-question"></p>
+                    <div class="quiz-options" id="quiz-options"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Data
+        const tenerExpressions = [
+            { spanish: "Tengo hambre", norwegian: "Jeg er sulten" },
+            { spanish: "Tengo sed", norwegian: "Jeg er tørst" },
+            { spanish: "Tengo frío", norwegian: "Jeg fryser / er kald" },
+            { spanish: "Tengo calor", norwegian: "Jeg er varm" },
+            { spanish: "Tengo sueño", norwegian: "Jeg er søvnig/trøtt" },
+            { spanish: "Tengo miedo", norwegian: "Jeg er redd" },
+            { spanish: "Tengo prisa", norwegian: "Jeg har det travelt" },
+            { spanish: "Tengo razón", norwegian: "Jeg har rett" },
+            { spanish: "Tengo suerte", norwegian: "Jeg er heldig" },
+            { spanish: "Tengo ... años", norwegian: "Jeg er ... år (gammel)" },
+            { spanish: "Tengo ganas de...", norwegian: "Jeg har lyst til å..." },
+            { spanish: "Tiene hambre", norwegian: "Han/hun er sulten" },
+            { spanish: "Tienes sed", norwegian: "Du er tørst" },
+            { spanish: "Tenemos frío", norwegian: "Vi fryser" },
+            { spanish: "Tienen calor", norwegian: "De er varme" }
+        ];
+
+        const bebidas = [
+            { spanish: "el agua", norwegian: "vannet" },
+            { spanish: "la limonada", norwegian: "limonaden" },
+            { spanish: "el zumo de naranja", norwegian: "appelsinjuicen" },
+            { spanish: "la Coca-Cola", norwegian: "colaen" },
+            { spanish: "el café", norwegian: "kaffen" },
+            { spanish: "el té", norwegian: "teen" },
+            { spanish: "la leche", norwegian: "melken" }
+        ];
+
+        const comida = [
+            { spanish: "la sopa", norwegian: "suppa" },
+            { spanish: "la ensalada", norwegian: "salaten" },
+            { spanish: "el pollo", norwegian: "kyllingen" },
+            { spanish: "el pescado", norwegian: "fisken" },
+            { spanish: "la carne", norwegian: "kjøttet" },
+            { spanish: "las patatas", norwegian: "potetene" },
+            { spanish: "el arroz", norwegian: "risen" },
+            { spanish: "el pan", norwegian: "brødet" },
+            { spanish: "el helado", norwegian: "isen" },
+            { spanish: "la tarta", norwegian: "kaken" },
+            { spanish: "la fruta", norwegian: "frukten" }
+        ];
+
+        const expresiones = [
+            { spanish: "¿Qué desea?", norwegian: "Hva ønsker du?" },
+            { spanish: "Para mí...", norwegian: "For meg..." },
+            { spanish: "Quiero...", norwegian: "Jeg vil ha..." },
+            { spanish: "La cuenta, por favor", norwegian: "Regningen, takk" },
+            { spanish: "De primer plato", norwegian: "Som forrett" },
+            { spanish: "De segundo plato", norwegian: "Som hovedrett" },
+            { spanish: "De postre", norwegian: "Som dessert" },
+            { spanish: "¿Algo más?", norwegian: "Noe mer?" },
+            { spanish: "Nada más, gracias", norwegian: "Ikke noe mer, takk" },
+            { spanish: "¡Buen provecho!", norwegian: "Vel bekomme!" }
+        ];
+
+        const verbForms = {
+            poder: {
+                yo: "puedo", tú: "puedes", "él": "puede", "ella": "puede",
+                nosotros: "podemos", vosotros: "podéis", ellos: "pueden", ellas: "pueden"
+            },
+            tener: {
+                yo: "tengo", tú: "tienes", "él": "tiene", "ella": "tiene",
+                nosotros: "tenemos", vosotros: "tenéis", ellos: "tienen", ellas: "tienen"
+            },
+            preferir: {
+                yo: "prefiero", tú: "prefieres", "él": "prefiere", "ella": "prefiere",
+                nosotros: "preferimos", vosotros: "preferís", ellos: "prefieren", ellas: "prefieren"
+            },
+            salir: {
+                yo: "salgo", tú: "sales", "él": "sale", "ella": "sale",
+                nosotros: "salimos", vosotros: "salís", ellos: "salen", ellas: "salen"
+            }
+        };
+
+        // Navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+                document.getElementById(btn.dataset.section).classList.add('active');
+            });
+        });
+
+        // Flashcard functionality
+        let currentTenerIndex = 0;
+        const flashcard = document.getElementById('tener-flashcard');
+        
+        function updateTenerFlashcard() {
+            const expr = tenerExpressions[currentTenerIndex];
+            document.getElementById('tener-spanish').textContent = expr.spanish;
+            document.getElementById('tener-norwegian').textContent = expr.norwegian;
+            document.getElementById('tener-progress').textContent = 
+                `${currentTenerIndex + 1} av ${tenerExpressions.length}`;
+            flashcard.classList.remove('flipped');
+            
+            document.getElementById('tener-prev').disabled = currentTenerIndex === 0;
+            document.getElementById('tener-next').disabled = currentTenerIndex === tenerExpressions.length - 1;
+        }
+
+        flashcard.addEventListener('click', () => flashcard.classList.toggle('flipped'));
+        
+        document.getElementById('tener-prev').addEventListener('click', () => {
+            if (currentTenerIndex > 0) {
+                currentTenerIndex--;
+                updateTenerFlashcard();
+            }
+        });
+
+        document.getElementById('tener-next').addEventListener('click', () => {
+            if (currentTenerIndex < tenerExpressions.length - 1) {
+                currentTenerIndex++;
+                updateTenerFlashcard();
+            }
+        });
+
+        // Populate vocab grids
+        function populateGrid(gridId, data) {
+            const grid = document.getElementById(gridId);
+            grid.innerHTML = data.map(item => `
+                <div class="vocab-item">
+                    <div class="vocab-spanish">${item.spanish}</div>
+                    <div class="vocab-norwegian">${item.norwegian}</div>
+                </div>
+            `).join('');
+        }
+
+        populateGrid('bebidas-grid', bebidas);
+        populateGrid('comida-grid', comida);
+        populateGrid('expresiones-grid', expresiones);
+
+        // Practice functionality
+        function setupPractice(questionId, inputId, checkId, feedbackId, newQuestionId, getData) {
+            let currentAnswer = '';
+            
+            function newQuestion() {
+                const data = getData();
+                document.getElementById(questionId).innerHTML = data.question;
+                currentAnswer = data.answer;
+                document.getElementById(inputId).value = '';
+                document.getElementById(inputId).classList.remove('correct', 'incorrect');
+                document.getElementById(feedbackId).classList.remove('show', 'correct', 'incorrect');
+            }
+
+            document.getElementById(checkId).addEventListener('click', () => {
+                const input = document.getElementById(inputId);
+                const feedback = document.getElementById(feedbackId);
+                const userAnswer = input.value.trim().toLowerCase();
+                const correctAnswers = Array.isArray(currentAnswer) ? currentAnswer : [currentAnswer];
+                
+                if (correctAnswers.some(ans => userAnswer === ans.toLowerCase())) {
+                    input.classList.remove('incorrect');
+                    input.classList.add('correct');
+                    feedback.textContent = '¡Muy bien! 🎉';
+                    feedback.classList.remove('incorrect');
+                    feedback.classList.add('correct', 'show');
+                } else {
+                    input.classList.remove('correct');
+                    input.classList.add('incorrect');
+                    feedback.textContent = `Riktig svar: ${correctAnswers[0]}`;
+                    feedback.classList.remove('correct');
+                    feedback.classList.add('incorrect', 'show');
+                }
+            });
+
+            document.getElementById(inputId).addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') document.getElementById(checkId).click();
+            });
+
+            document.getElementById(newQuestionId).addEventListener('click', newQuestion);
+            newQuestion();
+        }
+
+        // Tener practice
+        setupPractice('tener-practice-question', 'tener-practice-input', 'tener-check', 
+            'tener-feedback', 'tener-new-question', () => {
+            const expr = tenerExpressions[Math.floor(Math.random() * tenerExpressions.length)];
+            return {
+                question: `Oversett til spansk: "<span class="practice-spanish">${expr.norwegian}</span>"`,
+                answer: expr.spanish
+            };
+        });
+
+        // Restaurant practice
+        const restPracticeData = [
+            { norwegian: "Hva ønsker du?", spanish: ["¿Qué desea?", "¿Qué deseas?"] },
+            { norwegian: "Regningen, takk", spanish: ["La cuenta, por favor"] },
+            { norwegian: "Som forrett", spanish: ["De primer plato"] },
+            { norwegian: "Som hovedrett", spanish: ["De segundo plato"] },
+            { norwegian: "Som dessert", spanish: ["De postre"] },
+            { norwegian: "Jeg vil ha suppa", spanish: ["Quiero la sopa"] },
+            { norwegian: "For meg, en kaffe", spanish: ["Para mí, un café"] },
+            { norwegian: "Ikke noe mer, takk", spanish: ["Nada más, gracias"] }
+        ];
+
+        setupPractice('rest-practice-question', 'rest-practice-input', 'rest-check', 
+            'rest-feedback', 'rest-new-question', () => {
+            const item = restPracticeData[Math.floor(Math.random() * restPracticeData.length)];
+            return {
+                question: `Oversett til spansk: "<span class="practice-spanish">${item.norwegian}</span>"`,
+                answer: item.spanish
+            };
+        });
+
+        // Verb practice
+        const pronouns = ['yo', 'tú', 'él', 'ella', 'nosotros', 'vosotros', 'ellos', 'ellas'];
+        const verbs = ['poder', 'tener', 'preferir', 'salir'];
+
+        setupPractice('verb-practice-question', 'verb-practice-input', 'verb-check', 
+            'verb-feedback', 'verb-new-question', () => {
+            const verb = verbs[Math.floor(Math.random() * verbs.length)];
+            const pronoun = pronouns[Math.floor(Math.random() * pronouns.length)];
+            return {
+                question: `Bøy <strong>${verb.toUpperCase()}</strong> for <strong>${pronoun}</strong>:`,
+                answer: verbForms[verb][pronoun]
+            };
+        });
+
+        // Quiz functionality
+        const quizQuestions = [
+            { question: "Hva betyr 'Tengo hambre'?", options: ["Jeg er sulten", "Jeg er tørst", "Jeg er trøtt", "Jeg fryser"], correct: 0 },
+            { question: "Hvordan sier du 'Jeg er tørst' på spansk?", options: ["Tengo frío", "Tengo sed", "Tengo calor", "Tengo hambre"], correct: 1 },
+            { question: "Hva er 'yo puedo' på norsk?", options: ["Jeg har", "Jeg foretrekker", "Jeg kan", "Jeg drar"], correct: 2 },
+            { question: "Hvordan bøyer du TENER for 'nosotros'?", options: ["tienen", "tenemos", "tienes", "tengo"], correct: 1 },
+            { question: "Hva betyr 'La cuenta, por favor'?", options: ["Menyen, takk", "Regningen, takk", "Vannet, takk", "Brødet, takk"], correct: 1 },
+            { question: "Hvordan sier du 'Som forrett' på spansk?", options: ["De postre", "De segundo plato", "De primer plato", "Para mí"], correct: 2 },
+            { question: "Hva er 'ellos prefieren' på norsk?", options: ["De kan", "De foretrekker", "De har", "De drar"], correct: 1 },
+            { question: "Hvordan bøyer du SALIR for 'yo'?", options: ["salo", "sale", "salgo", "salio"], correct: 2 },
+            { question: "Hva betyr 'Tengo prisa'?", options: ["Jeg er redd", "Jeg har rett", "Jeg har det travelt", "Jeg er heldig"], correct: 2 },
+            { question: "Hvordan sier du 'Jeg vil ha kyllingen' på spansk?", options: ["Tengo el pollo", "Quiero el pollo", "Prefiero el pollo", "Puedo el pollo"], correct: 1 },
+            { question: "Hva er 'tú tienes' på norsk?", options: ["Du kan", "Du har", "Du foretrekker", "Du drar"], correct: 1 },
+            { question: "Hvordan bøyer du PREFERIR for 'ella'?", options: ["prefiere", "prefiero", "preferimos", "prefieren"], correct: 0 },
+            { question: "Hva betyr 'el helado'?", options: ["Kaken", "Isen", "Frukten", "Risen"], correct: 1 },
+            { question: "Hvordan sier du 'Vi kan' på spansk?", options: ["Podemos", "Pueden", "Puedo", "Podéis"], correct: 0 },
+            { question: "Hva er 'Tengo ... años'?", options: ["Jeg er ... meter", "Jeg har ... kroner", "Jeg er ... år", "Jeg har ... venner"], correct: 2 }
+        ];
+
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+        let shuffledQuiz = [];
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function startQuiz() {
+            shuffledQuiz = shuffleArray(quizQuestions).slice(0, 10);
+            currentQuizIndex = 0;
+            quizScore = 0;
+            showQuizQuestion();
+        }
+
+        function showQuizQuestion() {
+            const progress = (currentQuizIndex / shuffledQuiz.length) * 100;
+            document.getElementById('quiz-progress-bar').style.width = `${progress}%`;
+
+            if (currentQuizIndex >= shuffledQuiz.length) {
+                showQuizResult();
+                return;
+            }
+
+            const q = shuffledQuiz[currentQuizIndex];
+            document.getElementById('quiz-question').textContent = q.question;
+            
+            const optionsHtml = q.options.map((opt, i) => 
+                `<button class="quiz-option" data-index="${i}">${opt}</button>`
+            ).join('');
+            
+            document.getElementById('quiz-options').innerHTML = optionsHtml;
+
+            document.querySelectorAll('.quiz-option').forEach(btn => {
+                btn.addEventListener('click', handleQuizAnswer);
+            });
+        }
+
+        function handleQuizAnswer(e) {
+            const selectedIndex = parseInt(e.target.dataset.index);
+            const q = shuffledQuiz[currentQuizIndex];
+            
+            document.querySelectorAll('.quiz-option').forEach(btn => {
+                btn.disabled = true;
+                const idx = parseInt(btn.dataset.index);
+                if (idx === q.correct) {
+                    btn.classList.add('correct');
+                } else if (idx === selectedIndex) {
+                    btn.classList.add('wrong');
+                }
+            });
+
+            if (selectedIndex === q.correct) {
+                quizScore++;
+            }
+
+            setTimeout(() => {
+                currentQuizIndex++;
+                showQuizQuestion();
+            }, 1200);
+        }
+
+        function showQuizResult() {
+            const percentage = Math.round((quizScore / shuffledQuiz.length) * 100);
+            let message = '';
+            
+            if (percentage === 100) message = '¡Perfecto! Du er klar for prøven! 🌟';
+            else if (percentage >= 80) message = '¡Muy bien! Nesten perfekt! 🎉';
+            else if (percentage >= 60) message = '¡Bien! Men øv litt mer! 👍';
+            else message = 'Øv mer og prøv igjen! 💪';
+
+            document.getElementById('quiz-content').innerHTML = `
+                <div class="quiz-result">
+                    <div class="quiz-score">${quizScore}/${shuffledQuiz.length}</div>
+                    <p class="quiz-message">${message}</p>
+                    <button class="restart-btn" onclick="startQuiz()">Ta quizen på nytt</button>
+                </div>
+            `;
+        }
+
+        // Initialize
+        updateTenerFlashcard();
+        startQuiz();
+    </script>
+</body>
+</html>
