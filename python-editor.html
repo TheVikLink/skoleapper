@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐍 Python Editor</title>
+    
+    <!-- Skulpt -->
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+    
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/theme/dracula.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/edit/closebrackets.min.js"></script>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-run {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        
+        .btn-run:hover {
+            box-shadow: 0 5px 20px rgba(17, 153, 142, 0.4);
+        }
+        
+        .btn-clear {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .btn-download {
+            background: #4ecdc4;
+            color: white;
+        }
+        
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .editor-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid #333;
+        }
+        
+        .panel-header {
+            background: #2d2d2d;
+            color: #888;
+            padding: 10px 15px;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27ca40; }
+        
+        .CodeMirror {
+            flex: 1;
+            font-size: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+        
+        .output-panel {
+            width: 40%;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            background: #0d0d0d;
+        }
+        
+        .output-content {
+            flex: 1;
+            padding: 15px;
+            color: #00ff00;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        
+        .output-error {
+            color: #ff6b6b;
+        }
+        
+        .input-prompt {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            padding: 10px;
+            background: #1a1a2e;
+            border-radius: 8px;
+        }
+        
+        .input-prompt input {
+            flex: 1;
+            background: #0d0d0d;
+            border: 1px solid #333;
+            color: #00ff00;
+            padding: 10px;
+            font-family: 'Consolas', monospace;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .input-prompt button {
+            background: #27ca40;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        /* Keyboard shortcuts hint */
+        .shortcuts {
+            background: #2d2d2d;
+            color: #666;
+            padding: 8px 15px;
+            font-size: 0.8em;
+            text-align: center;
+        }
+        
+        .shortcuts kbd {
+            background: #444;
+            color: #aaa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin: 0 2px;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .editor-panel {
+                border-right: none;
+                border-bottom: 2px solid #333;
+                height: 50vh;
+            }
+            
+            .output-panel {
+                width: 100%;
+                min-width: unset;
+                height: 50vh;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>🐍 Python Editor</h1>
+    <div class="header-buttons">
+        <button class="btn btn-run" onclick="runCode()">▶ Kjør (Ctrl+Enter)</button>
+        <button class="btn btn-clear" onclick="clearOutput()">🗑 Tøm output</button>
+        <button class="btn btn-download" onclick="downloadCode()">💾 Last ned</button>
+    </div>
+</div>
+
+<div class="shortcuts">
+    <kbd>Ctrl</kbd>+<kbd>Enter</kbd> Kjør kode &nbsp;|&nbsp;
+    <kbd>Tab</kbd> Innrykk &nbsp;|&nbsp;
+    <kbd>Ctrl</kbd>+<kbd>S</kbd> Last ned
+</div>
+
+<div class="main-container">
+    <div class="editor-panel">
+        <div class="panel-header">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+            <span style="margin-left: 10px;">program.py</span>
+        </div>
+        <textarea id="code"># Velkommen til Python!
+# Skriv koden din her og trykk "Kjør"
+
+navn = "Verden"
+print("Hei, " + navn + "!")
+
+# Prøv å endre navnet og kjør igjen!
+</textarea>
+    </div>
+    
+    <div class="output-panel">
+        <div class="panel-header">
+            <span>📤 Output</span>
+        </div>
+        <div class="output-content" id="output">
+            <span style="color: #666;">Trykk "Kjør" for å se resultatet...</span>
+        </div>
+    </div>
+</div>
+
+<script>
+let editor;
+
+document.addEventListener('DOMContentLoaded', function() {
+    editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+        mode: 'python',
+        theme: 'dracula',
+        lineNumbers: true,
+        matchBrackets: true,
+        autoCloseBrackets: true,
+        indentUnit: 4,
+        tabSize: 4,
+        indentWithTabs: false,
+        lineWrapping: true,
+        extraKeys: {
+            'Ctrl-Enter': runCode,
+            'Cmd-Enter': runCode,
+            'Ctrl-S': function(cm) {
+                downloadCode();
+                return false;
+            },
+            'Cmd-S': function(cm) {
+                downloadCode();
+                return false;
+            }
+        }
+    });
+    
+    // Load saved code from localStorage
+    const savedCode = localStorage.getItem('pythonEditorCode');
+    if (savedCode) {
+        editor.setValue(savedCode);
+    }
+    
+    // Auto-save
+    editor.on('change', function() {
+        localStorage.setItem('pythonEditorCode', editor.getValue());
+    });
+});
+
+function builtinRead(x) {
+    if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+        throw "File not found: '" + x + "'";
+    return Sk.builtinFiles["files"][x];
+}
+
+function runCode() {
+    const code = editor.getValue();
+    const outputArea = document.getElementById('output');
+    outputArea.innerHTML = '';
+    
+    Sk.configure({
+        output: function(text) {
+            outputArea.innerHTML += text;
+        },
+        read: builtinRead,
+        inputfun: function(prompt) {
+            return new Promise(function(resolve) {
+                outputArea.innerHTML += prompt;
+                
+                const inputDiv = document.createElement('div');
+                inputDiv.className = 'input-prompt';
+                
+                const inputField = document.createElement('input');
+                inputField.type = 'text';
+                inputField.placeholder = 'Skriv her og trykk Enter...';
+                
+                const submitBtn = document.createElement('button');
+                submitBtn.textContent = 'OK';
+                
+                inputDiv.appendChild(inputField);
+                inputDiv.appendChild(submitBtn);
+                outputArea.appendChild(inputDiv);
+                
+                inputField.focus();
+                
+                function submitInput() {
+                    const value = inputField.value;
+                    outputArea.innerHTML += value + '\n';
+                    inputDiv.remove();
+                    resolve(value);
+                }
+                
+                inputField.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') submitInput();
+                });
+                
+                submitBtn.addEventListener('click', submitInput);
+            });
+        },
+        inputfunTakesPrompt: true,
+    });
+    
+    Sk.misceval.asyncToPromise(function() {
+        return Sk.importMainWithBody("<stdin>", false, code, true);
+    }).catch(function(err) {
+        outputArea.innerHTML += '<span class="output-error">Feil: ' + err.toString() + '</span>';
+    });
+}
+
+function clearOutput() {
+    document.getElementById('output').innerHTML = '<span style="color: #666;">Output tømt. Trykk "Kjør" for å kjøre koden på nytt.</span>';
+}
+
+function downloadCode() {
+    const code = editor.getValue();
+    const blob = new Blob([code], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'program.py';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// Prevent Ctrl+S from triggering browser save
+document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        downloadCode();
+    }
+});
+</script>
+
+</body>
+</html>
