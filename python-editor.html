@@ -147,6 +147,37 @@
             color: #ff6b6b;
         }
         
+        .turtle-container {
+            background: white;
+            border-bottom: 2px solid #333;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        #turtle-canvas {
+            display: inline-block;
+        }
+        
+        .turtle-toggle {
+            background: #4ecdc4;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8em;
+            margin-left: auto;
+        }
+        
+        .turtle-toggle.active {
+            background: #27ca40;
+        }
+        
+        .panel-header {
+            display: flex;
+            align-items: center;
+        }
+        
         .input-prompt {
             display: flex;
             gap: 10px;
@@ -251,12 +282,23 @@ navn = "Verden"
 print("Hei, " + navn + "!")
 
 # Prøv å endre navnet og kjør igjen!
+
+# === Turtle eksempel (fjern # for å prøve) ===
+# import turtle
+# t = turtle.Turtle()
+# t.forward(100)
+# t.right(90)
+# t.forward(100)
 </textarea>
     </div>
     
     <div class="output-panel">
         <div class="panel-header">
             <span>📤 Output</span>
+            <button onclick="toggleTurtle()" class="turtle-toggle" id="turtle-toggle-btn">🐢 Vis turtle</button>
+        </div>
+        <div class="turtle-container" id="turtle-container" style="display: none;">
+            <div id="turtle-canvas" style="width: 400px; height: 400px; margin: 0 auto;"></div>
         </div>
         <div class="output-content" id="output">
             <span style="color: #666;">Trykk "Kjør" for å se resultatet...</span>
@@ -310,10 +352,39 @@ function builtinRead(x) {
     return Sk.builtinFiles["files"][x];
 }
 
+function toggleTurtle() {
+    const container = document.getElementById('turtle-container');
+    const btn = document.getElementById('turtle-toggle-btn');
+    
+    if (container.style.display === 'none') {
+        container.style.display = 'block';
+        btn.classList.add('active');
+        btn.textContent = '🐢 Skjul turtle';
+    } else {
+        container.style.display = 'none';
+        btn.classList.remove('active');
+        btn.textContent = '🐢 Vis turtle';
+    }
+}
+
 function runCode() {
     const code = editor.getValue();
     const outputArea = document.getElementById('output');
     outputArea.innerHTML = '';
+    
+    // Check if code uses turtle - show canvas BEFORE running
+    const usesTurtle = code.includes('import turtle') || code.includes('from turtle');
+    const turtleContainer = document.getElementById('turtle-container');
+    const turtleCanvas = document.getElementById('turtle-canvas');
+    const turtleBtn = document.getElementById('turtle-toggle-btn');
+    
+    if (usesTurtle) {
+        turtleContainer.style.display = 'block';
+        turtleBtn.classList.add('active');
+        turtleBtn.textContent = '🐢 Skjul turtle';
+        // Clear previous turtle drawings
+        turtleCanvas.innerHTML = '';
+    }
     
     Sk.configure({
         output: function(text) {
@@ -355,7 +426,15 @@ function runCode() {
             });
         },
         inputfunTakesPrompt: true,
+        execLimit: 10000,
+        killableWhile: true,
+        killableFor: true
     });
+    
+    // Set turtle graphics configuration
+    (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'turtle-canvas';
+    Sk.TurtleGraphics.width = 400;
+    Sk.TurtleGraphics.height = 400;
     
     Sk.misceval.asyncToPromise(function() {
         return Sk.importMainWithBody("<stdin>", false, code, true);
