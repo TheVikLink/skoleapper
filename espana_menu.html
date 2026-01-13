@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>España - Menú</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lora:wght@400;500&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lora', Georgia, serif;
+            background: #f5f0e6;
+            min-height: 100vh;
+        }
+
+        .menu-container {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr 1fr;
+            min-height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            box-shadow: 0 0 60px rgba(0,0,0,0.15);
+        }
+
+        /* Left Column - España & Entrantes */
+        .left-column {
+            background: #d4a012;
+            padding: 40px 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bunting {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: repeating-linear-gradient(
+                90deg,
+                #c41e3a 0px,
+                #c41e3a 20px,
+                #d4a012 20px,
+                #d4a012 22px,
+                #c41e3a 22px,
+                #c41e3a 42px
+            );
+        }
+
+        .bunting::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 25px;
+            background: 
+                linear-gradient(135deg, #c41e3a 50%, transparent 50%) 0 0 / 20px 25px,
+                linear-gradient(-135deg, #c41e3a 50%, transparent 50%) 0 0 / 20px 25px;
+            background-position: 0 0, 10px 0;
+        }
+
+        .espana-title {
+            margin-top: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0;
+        }
+
+        .espana-title span {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            font-size: 4.5rem;
+            color: #1a1a1a;
+            line-height: 0.85;
+            text-shadow: 3px 3px 0 rgba(255,255,255,0.2);
+        }
+
+        .espana-title span:nth-child(3) {
+            position: relative;
+        }
+
+        .espana-title span:nth-child(3)::after {
+            content: '~';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+        }
+
+        .decorative-elements {
+            margin: 30px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .deco-icon {
+            font-size: 1.8rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: #1a1a1a;
+            border-bottom: 2px solid #1a1a1a;
+            padding-bottom: 8px;
+            margin: 30px 0 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 8px 0;
+            border-bottom: 1px dotted rgba(0,0,0,0.2);
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-name {
+            font-size: 1rem;
+            color: #1a1a1a;
+        }
+
+        .item-price {
+            font-weight: 500;
+            color: #1a1a1a;
+            white-space: nowrap;
+            margin-left: 10px;
+        }
+
+        /* Center Column */
+        .center-column {
+            background: #fffef8;
+            padding: 40px 35px;
+            position: relative;
+        }
+
+        .center-column .section-title {
+            color: #c41e3a;
+            border-bottom-color: #c41e3a;
+            text-align: center;
+        }
+
+        .center-column .item-name {
+            color: #333;
+        }
+
+        .center-column .item-price {
+            color: #c41e3a;
+            font-weight: 600;
+        }
+
+        .flamenco-scene {
+            margin-top: 40px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .flamenco-dancers {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .fans {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            font-size: 3rem;
+            color: #c41e3a;
+        }
+
+        .guitar-icon {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-size: 2.5rem;
+        }
+
+        /* Right Column */
+        .right-column {
+            background: #d4a012;
+            padding: 40px 30px;
+            position: relative;
+        }
+
+        .right-column .bunting {
+            background: repeating-linear-gradient(
+                90deg,
+                #c41e3a 0px,
+                #c41e3a 15px,
+                transparent 15px,
+                transparent 17px
+            );
+        }
+
+        .ole-text {
+            position: absolute;
+            bottom: 40px;
+            right: 30px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            color: #c41e3a;
+            transform: rotate(-5deg);
+            text-shadow: 2px 2px 0 rgba(255,255,255,0.3);
+        }
+
+        .ole-text span {
+            display: block;
+        }
+
+        .decorative-border {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background: 
+                radial-gradient(circle at 10% 90%, #c41e3a 8px, transparent 8px),
+                radial-gradient(circle at 30% 85%, #1a1a1a 5px, transparent 5px),
+                radial-gradient(circle at 50% 92%, #c41e3a 6px, transparent 6px),
+                radial-gradient(circle at 70% 88%, #1a1a1a 4px, transparent 4px),
+                radial-gradient(circle at 90% 90%, #c41e3a 7px, transparent 7px);
+        }
+
+        /* Print styles */
+        @media print {
+            .menu-container {
+                box-shadow: none;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .menu-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .espana-title span {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-container">
+        <!-- Left Column -->
+        <div class="left-column">
+            <div class="bunting"></div>
+            
+            <div class="espana-title">
+                <span>E</span>
+                <span>S</span>
+                <span>P</span>
+                <span>A</span>
+                <span>Ñ</span>
+                <span>A</span>
+            </div>
+
+            <div class="decorative-elements">
+                <span class="deco-icon">🏠</span>
+                <span class="deco-icon">🌻</span>
+                <span class="deco-icon">🍊</span>
+            </div>
+
+            <h2 class="section-title">Entrantes</h2>
+            
+            <div class="menu-item">
+                <span class="item-name">Tostada con tomate</span>
+                <span class="item-price">1,50 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Hummus</span>
+                <span class="item-price">2,50 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Aceitunas</span>
+                <span class="item-price">2,00 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Jamón serrano con pan y tomate</span>
+                <span class="item-price">5,00 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Quesos</span>
+                <span class="item-price">6,00 €</span>
+            </div>
+        </div>
+
+        <!-- Center Column -->
+        <div class="center-column">
+            <span class="guitar-icon">🎸</span>
+            
+            <h2 class="section-title">Ensaladas</h2>
+            <div class="menu-item">
+                <span class="item-name">Ensalada mixta</span>
+                <span class="item-price">6,50 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Ensalada de queso</span>
+                <span class="item-price">8,50 €</span>
+            </div>
+
+            <h2 class="section-title">Tapas</h2>
+            <div class="menu-item">
+                <span class="item-name">Salmorejo</span>
+                <span class="item-price">6,50 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Gazpacho</span>
+                <span class="item-price">4,00 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Berenjenas</span>
+                <span class="item-price">5,00 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Patatas bravas</span>
+                <span class="item-price">3,50 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Tortilla de patatas</span>
+                <span class="item-price">4,00 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Tortilla de patatas con chorizo</span>
+                <span class="item-price">5,00 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Champiñones al ajillo</span>
+                <span class="item-price">5,00 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Calamares a la romana</span>
+                <span class="item-price">7,00 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Gambas al ajillo</span>
+                <span class="item-price">8,50 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Pulpo a la gallega</span>
+                <span class="item-price">8,50 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">San Jacobo</span>
+                <span class="item-price">5,50 €</span>
+            </div>
+
+            <h2 class="section-title">Paellas</h2>
+            <div class="menu-item">
+                <span class="item-name">Paella valenciana</span>
+                <span class="item-price">8,50 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Paella de verduras</span>
+                <span class="item-price">7,50 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Paella de marisco</span>
+                <span class="item-price">10,00 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Paella de tinta de calamar</span>
+                <span class="item-price">9,00 €</span>
+            </div>
+
+            <div class="flamenco-scene">
+                <div class="flamenco-dancers">
+                    <span>💃</span>
+                    <span>💃</span>
+                </div>
+                <div class="fans">
+                    <span>🪭</span>
+                    <span>🪭</span>
+                    <span>🪭</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="right-column">
+            <div class="bunting"></div>
+            
+            <h2 class="section-title">Postres</h2>
+            <div class="menu-item">
+                <span class="item-name">Tarta de queso</span>
+                <span class="item-price">3,00 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Helado</span>
+                <span class="item-price">2,00 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Crema catalana</span>
+                <span class="item-price">3,50 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Tarta de Santiago</span>
+                <span class="item-price">3,00 €</span>
+            </div>
+
+            <h2 class="section-title">Churros</h2>
+            <div class="menu-item">
+                <span class="item-name">Churros con azúcar</span>
+                <span class="item-price">2,50 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Churros con chocolate</span>
+                <span class="item-price">3,50 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Churros con canela</span>
+                <span class="item-price">2,50 €</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Churros con caramelo y chocolate</span>
+                <span class="item-price">4,00 €</span>
+            </div>
+
+            <div class="ole-text">
+                <span>¡Olé!</span>
+                <span>¡Olé!</span>
+            </div>
+            
+            <div class="decorative-border"></div>
+        </div>
+    </div>
+</body>
+</html>
