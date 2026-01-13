@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samtalepartnere - Spansk</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            margin: 0 0 8px 0;
+            color: #333;
+            font-size: 1.5rem;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #444;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .hint {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 4px;
+            margin-bottom: 16px;
+        }
+        
+        .settings {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .setting-group {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        select, input[type="number"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+        }
+        
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            margin-top: 12px;
+        }
+        
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .round-display {
+            margin-top: 24px;
+        }
+        
+        .round-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .round-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .round-counter {
+            background: #667eea;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .pairs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .pair, .trio {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            border-radius: 12px;
+            animation: fadeIn 0.3s ease-out;
+            flex-wrap: wrap;
+        }
+        
+        .trio {
+            background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
+            border: 2px solid #ffc107;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .person {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+        
+        .pair-icon {
+            font-size: 1.3rem;
+        }
+        
+        .trio-label {
+            font-size: 0.75rem;
+            color: #856404;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: -8px;
+            text-align: center;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .nav-buttons button {
+            flex: 1;
+        }
+        
+        .btn-nav {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-nav:hover {
+            background: #218838;
+        }
+        
+        .btn-nav:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .btn-prev {
+            background: #6c757d;
+        }
+        
+        .btn-prev:hover:not(:disabled) {
+            background: #5a6268;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+        
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #667eea;
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #444;
+        }
+
+        .error-box {
+            background: #ffe7e7;
+            border-left: 4px solid #dc3545;
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🗣️ Samtalepartnere</h1>
+        <p class="subtitle">Lag par for samtaleøvelser i spansk</p>
+        
+        <div id="setup-section">
+            <label for="students">Elevliste</label>
+            <textarea id="students" placeholder="Skriv inn elevnavn, ett per linje:&#10;Maria&#10;Juan&#10;Carlos&#10;Sofia&#10;..."></textarea>
+            <p class="hint">Ett navn per linje</p>
+            
+            <div id="info-box" class="info-box hidden"></div>
+            <div id="error-box" class="error-box hidden"></div>
+            
+            <div class="settings">
+                <div class="setting-group">
+                    <label for="rounds">Antall runder</label>
+                    <select id="rounds">
+                        <option value="0">Maks mulig</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button class="btn-primary" onclick="startPairing()">Start pardanning</button>
+        </div>
+        
+        <div id="round-section" class="hidden">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            
+            <div class="round-display">
+                <div class="round-header">
+                    <span class="round-title">Runde <span id="current-round">1</span></span>
+                    <span class="round-counter">
+                        <span id="round-num">1</span> av <span id="total-rounds">1</span>
+                    </span>
+                </div>
+                
+                <div class="pairs-list" id="pairs-list"></div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn-nav btn-prev" id="prev-btn" onclick="prevRound()">← Forrige</button>
+                <button class="btn-nav" id="next-btn" onclick="nextRound()">Neste →</button>
+            </div>
+            
+            <button class="btn-secondary" onclick="resetApp()">Start på nytt</button>
+        </div>
+    </div>
+
+    <script>
+        let allRounds = [];
+        let currentRoundIndex = 0;
+        let totalRoundsSelected = 0;
+
+        document.getElementById('students').addEventListener('input', updateRoundOptions);
+
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function generateOptimalRounds(participants) {
+            const n = participants.length;
+            const isOdd = n % 2 === 1;
+            
+            if (!isOdd) {
+                // Standard round-robin for even numbers
+                let list = [...participants];
+                const rounds = [];
+                
+                for (let round = 0; round < n - 1; round++) {
+                    const pairs = [];
+                    for (let i = 0; i < n / 2; i++) {
+                        pairs.push([list[i], list[n - 1 - i]]);
+                    }
+                    rounds.push({ pairs, trio: null });
+                    
+                    const last = list[n - 1];
+                    for (let i = n - 1; i > 1; i--) {
+                        list[i] = list[i - 1];
+                    }
+                    list[1] = last;
+                }
+                return rounds;
+            }
+            
+            // For odd numbers: use backtracking to find valid rounds without duplicates
+            const hasMet = new Set();
+            const met = (a, b) => hasMet.has([a, b].sort().join('-'));
+            const addMet = (a, b) => hasMet.add([a, b].sort().join('-'));
+            
+            const rounds = [];
+            
+            function findRound() {
+                const available = new Set(participants);
+                const pairs = [];
+                let trio = null;
+                
+                function backtrack(remaining) {
+                    const arr = [...remaining];
+                    
+                    if (arr.length === 0) {
+                        return true;
+                    }
+                    
+                    if (arr.length === 1) {
+                        const leftover = arr[0];
+                        for (let i = 0; i < pairs.length; i++) {
+                            const [p1, p2] = pairs[i];
+                            if (!met(leftover, p1) && !met(leftover, p2)) {
+                                trio = [p1, p2, leftover];
+                                pairs.splice(i, 1);
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                    
+                    for (let i = 0; i < arr.length; i++) {
+                        for (let j = i + 1; j < arr.length; j++) {
+                            if (!met(arr[i], arr[j])) {
+                                pairs.push([arr[i], arr[j]]);
+                                remaining.delete(arr[i]);
+                                remaining.delete(arr[j]);
+                                
+                                if (backtrack(remaining)) {
+                                    return true;
+                                }
+                                
+                                pairs.pop();
+                                remaining.add(arr[i]);
+                                remaining.add(arr[j]);
+                            }
+                        }
+                    }
+                    
+                    return false;
+                }
+                
+                if (backtrack(available)) {
+                    return { pairs, trio };
+                }
+                return null;
+            }
+            
+            while (true) {
+                const round = findRound();
+                if (!round) break;
+                
+                round.pairs.forEach(([a, b]) => addMet(a, b));
+                if (round.trio) {
+                    addMet(round.trio[0], round.trio[1]);
+                    addMet(round.trio[0], round.trio[2]);
+                    addMet(round.trio[1], round.trio[2]);
+                }
+                
+                rounds.push(round);
+            }
+            
+            return rounds;
+        }
+
+        function calculateMaxRounds(n) {
+            // For even: n-1 rounds
+            // For odd: need to calculate (it's less due to trio constraint)
+            if (n % 2 === 0) {
+                return n - 1;
+            }
+            
+            // For odd numbers, simulate to find max
+            // This is a rough estimate based on the pattern
+            const testStudents = [];
+            for (let i = 0; i < n; i++) testStudents.push('S' + i);
+            return generateOptimalRounds(testStudents).length;
+        }
+
+        function updateRoundOptions() {
+            const text = document.getElementById('students').value;
+            const names = text.split('\n')
+                .map(n => n.trim())
+                .filter(n => n.length > 0);
+            
+            const select = document.getElementById('rounds');
+            const infoBox = document.getElementById('info-box');
+            const errorBox = document.getElementById('error-box');
+            
+            infoBox.classList.add('hidden');
+            errorBox.classList.add('hidden');
+            
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+            
+            if (names.length < 2) {
+                infoBox.textContent = 'Skriv inn minst 2 elever for å starte.';
+                infoBox.classList.remove('hidden');
+                return;
+            }
+            
+            const uniqueNames = [...new Set(names)];
+            if (uniqueNames.length < names.length) {
+                errorBox.textContent = '⚠️ Det er duplikater i listen. Fjern dem for å fortsette.';
+                errorBox.classList.remove('hidden');
+            }
+            
+            const n = names.length;
+            const maxRounds = calculateMaxRounds(n);
+            
+            for (let i = 1; i <= maxRounds; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i + (i === 1 ? ' runde' : ' runder');
+                select.appendChild(option);
+            }
+            
+            if (n % 2 === 1) {
+                infoBox.innerHTML = `<strong>${n} elever:</strong> Én gruppe på tre hver runde. Maks ${maxRounds} runder uten at noen møtes to ganger.`;
+            } else {
+                infoBox.innerHTML = `<strong>${n} elever:</strong> Alle i par hver runde. Maks ${maxRounds} runder.`;
+            }
+            infoBox.classList.remove('hidden');
+        }
+
+        function startPairing() {
+            const text = document.getElementById('students').value;
+            let students = text.split('\n')
+                .map(n => n.trim())
+                .filter(n => n.length > 0);
+            
+            const uniqueStudents = [...new Set(students)];
+            if (uniqueStudents.length < students.length) {
+                alert('Det er duplikater i elevlisten. Vennligst fjern dem først.');
+                return;
+            }
+            
+            if (students.length < 2) {
+                alert('Du trenger minst 2 elever for å danne par.');
+                return;
+            }
+            
+            // Shuffle for randomness
+            students = shuffleArray(students);
+            
+            allRounds = generateOptimalRounds(students);
+            
+            const roundSelect = document.getElementById('rounds');
+            totalRoundsSelected = parseInt(roundSelect.value);
+            if (totalRoundsSelected === 0) {
+                totalRoundsSelected = allRounds.length;
+            }
+            
+            currentRoundIndex = 0;
+            
+            document.getElementById('total-rounds').textContent = totalRoundsSelected;
+            document.getElementById('setup-section').classList.add('hidden');
+            document.getElementById('round-section').classList.remove('hidden');
+            
+            displayCurrentRound();
+        }
+
+        function displayCurrentRound() {
+            const round = allRounds[currentRoundIndex];
+            
+            document.getElementById('current-round').textContent = currentRoundIndex + 1;
+            document.getElementById('round-num').textContent = currentRoundIndex + 1;
+            
+            const progress = ((currentRoundIndex + 1) / totalRoundsSelected) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            
+            const pairsList = document.getElementById('pairs-list');
+            pairsList.innerHTML = '';
+            
+            // Display trio first if exists
+            if (round.trio) {
+                const trioContainer = document.createElement('div');
+                trioContainer.innerHTML = `
+                    <div class="trio-label">Gruppe på tre</div>
+                    <div class="trio">
+                        <span class="person">${round.trio[0]}</span>
+                        <span class="pair-icon">🤝</span>
+                        <span class="person">${round.trio[1]}</span>
+                        <span class="pair-icon">🤝</span>
+                        <span class="person">${round.trio[2]}</span>
+                    </div>
+                `;
+                pairsList.appendChild(trioContainer);
+            }
+            
+            // Display pairs
+            round.pairs.forEach((pair, index) => {
+                const pairDiv = document.createElement('div');
+                pairDiv.className = 'pair';
+                pairDiv.style.animationDelay = (index * 0.05) + 's';
+                pairDiv.innerHTML = `
+                    <span class="person">${pair[0]}</span>
+                    <span class="pair-icon">🤝</span>
+                    <span class="person">${pair[1]}</span>
+                `;
+                pairsList.appendChild(pairDiv);
+            });
+            
+            document.getElementById('prev-btn').disabled = currentRoundIndex === 0;
+            
+            const nextBtn = document.getElementById('next-btn');
+            if (currentRoundIndex >= totalRoundsSelected - 1) {
+                nextBtn.textContent = '✓ Ferdig!';
+                nextBtn.disabled = true;
+            } else {
+                nextBtn.textContent = 'Neste →';
+                nextBtn.disabled = false;
+            }
+        }
+
+        function nextRound() {
+            if (currentRoundIndex < totalRoundsSelected - 1) {
+                currentRoundIndex++;
+                displayCurrentRound();
+            }
+        }
+
+        function prevRound() {
+            if (currentRoundIndex > 0) {
+                currentRoundIndex--;
+                displayCurrentRound();
+            }
+        }
+
+        function resetApp() {
+            document.getElementById('setup-section').classList.remove('hidden');
+            document.getElementById('round-section').classList.add('hidden');
+            allRounds = [];
+            currentRoundIndex = 0;
+        }
+
+        updateRoundOptions();
+    </script>
+</body>
+</html>
