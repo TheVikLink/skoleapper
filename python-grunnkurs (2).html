@@ -1,0 +1,2634 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐍 Python Grunnkurs – 8. trinn</title>
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/theme/dracula.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/edit/closebrackets.min.js"></script>
+    <script>
+    // Google Form URLs for progress tracking
+    const FORM_URLS = {
+      1: "https://docs.google.com/forms/d/e/1FAIpQLSeTJ8VcbzQIef5s7k1G3-YWsfd_dr1ZPxkmUl4y084OmY65pg/viewform?usp=pp_url&entry.1967987119=1.%20Variabler",
+      2: "https://docs.google.com/forms/d/e/1FAIpQLSeTJ8VcbzQIef5s7k1G3-YWsfd_dr1ZPxkmUl4y084OmY65pg/viewform?usp=pp_url&entry.1967987119=2.%20Matematikk",
+      3: "https://docs.google.com/forms/d/e/1FAIpQLSeTJ8VcbzQIef5s7k1G3-YWsfd_dr1ZPxkmUl4y084OmY65pg/viewform?usp=pp_url&entry.1967987119=3.%20Modulo",
+      4: "https://docs.google.com/forms/d/e/1FAIpQLSeTJ8VcbzQIef5s7k1G3-YWsfd_dr1ZPxkmUl4y084OmY65pg/viewform?usp=pp_url&entry.1967987119=4.%20Tekststrenger",
+      5: "https://docs.google.com/forms/d/e/1FAIpQLSeTJ8VcbzQIef5s7k1G3-YWsfd_dr1ZPxkmUl4y084OmY65pg/viewform?usp=pp_url&entry.1967987119=5.%20Input",
+      6: "https://docs.google.com/forms/d/e/1FAIpQLSeTJ8VcbzQIef5s7k1G3-YWsfd_dr1ZPxkmUl4y084OmY65pg/viewform?usp=pp_url&entry.1967987119=6.%20If%2Felse",
+      7: "https://docs.google.com/forms/d/e/1FAIpQLSeTJ8VcbzQIef5s7k1G3-YWsfd_dr1ZPxkmUl4y084OmY65pg/viewform?usp=pp_url&entry.1967987119=7.%20Sammenligninger",
+      8: "https://docs.google.com/forms/d/e/1FAIpQLSeTJ8VcbzQIef5s7k1G3-YWsfd_dr1ZPxkmUl4y084OmY65pg/viewform?usp=pp_url&entry.1967987119=8.%20And%2For%2Fnot",
+      9: "https://docs.google.com/forms/d/e/1FAIpQLSeTJ8VcbzQIef5s7k1G3-YWsfd_dr1ZPxkmUl4y084OmY65pg/viewform?usp=pp_url&entry.1967987119=9.%20While-l%C3%B8kker",
+      10: "https://docs.google.com/forms/d/e/1FAIpQLSeTJ8VcbzQIef5s7k1G3-YWsfd_dr1ZPxkmUl4y084OmY65pg/viewform?usp=pp_url&entry.1967987119=10.%20For-l%C3%B8kker",
+      11: "https://docs.google.com/forms/d/e/1FAIpQLSeTJ8VcbzQIef5s7k1G3-YWsfd_dr1ZPxkmUl4y084OmY65pg/viewform?usp=pp_url&entry.1967987119=11.%20Lister",
+      12: "https://docs.google.com/forms/d/e/1FAIpQLSeTJ8VcbzQIef5s7k1G3-YWsfd_dr1ZPxkmUl4y084OmY65pg/viewform?usp=pp_url&entry.1967987119=FERDIG%20MED%20ALT!%20%F0%9F%8E%89"
+    };
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5em;
+        }
+        
+        .header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1.2em;
+        }
+        
+        .nav {
+            background: #1a1a2e;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .nav-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .nav a {
+            color: #a0a0a0;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            transition: all 0.2s;
+        }
+        
+        .nav a:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .chapter {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .chapter-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .chapter-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.3em;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .chapter-title {
+            margin: 0;
+            color: #333;
+            font-size: 1.6em;
+        }
+        
+        .intro-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .intro-box h3 {
+            margin-top: 0;
+        }
+        
+        .explanation {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        
+        .explanation h4 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        
+        .tip {
+            background: #fff3cd;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .tip::before {
+            content: "💡 Tips: ";
+            font-weight: bold;
+        }
+        
+        .warning {
+            background: #f8d7da;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .warning::before {
+            content: "⚠️ Obs: ";
+            font-weight: bold;
+        }
+        
+        .task {
+            background: #d4edda;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #28a745;
+        }
+        
+        .task::before {
+            content: "✏️ Oppgave: ";
+            font-weight: bold;
+        }
+        
+        .challenge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .challenge h4 {
+            margin-top: 0;
+        }
+        
+        /* Code Editor Styles */
+        .code-editor {
+            margin: 20px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .editor-header {
+            background: #2d2d2d;
+            color: #888;
+            padding: 10px 15px;
+            font-size: 0.85em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .editor-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .editor-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff5f56;
+        }
+        
+        .editor-dot:nth-child(2) { background: #ffbd2e; }
+        .editor-dot:nth-child(3) { background: #27ca40; }
+        
+        .code-textarea {
+            width: 100%;
+            min-height: 250px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            border: none;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            resize: vertical;
+            outline: none;
+            line-height: 1.5;
+            display: none; /* Hidden, CodeMirror replaces it */
+        }
+        
+        .CodeMirror {
+            height: auto;
+            min-height: 200px;
+            font-size: 14px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            border-radius: 0;
+        }
+        
+        .CodeMirror-scroll {
+            min-height: 200px;
+        }
+        
+        .code-editor.fullscreen .CodeMirror {
+            height: calc(100vh - 250px);
+            font-size: 16px;
+        }
+        
+        /* Fullscreen mode */
+        .code-editor.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 9999;
+            margin: 0;
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .code-editor.fullscreen .code-textarea {
+            flex: 1;
+            min-height: unset;
+            font-size: 16px;
+        }
+        
+        .code-editor.fullscreen .output-area {
+            min-height: 150px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .fullscreen-btn {
+            background: #444;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        
+        .fullscreen-btn:hover {
+            background: #555;
+        }
+        
+        /* Complete module button */
+        .complete-module-btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-top: 25px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-align: center;
+        }
+        
+        .complete-module-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(17, 153, 142, 0.4);
+        }
+        
+        .complete-module-btn::before {
+            content: "✓ ";
+        }
+        
+        /* Progress bar in nav */
+        .progress-container {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            height: 8px;
+            width: 200px;
+            margin-left: 15px;
+            overflow: hidden;
+        }
+        
+        .progress-bar-fill {
+            background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+        
+        .progress-text {
+            color: #aaa;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+        
+        /* Copy confirmation modal */
+        .copy-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.2s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .copy-modal {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .copy-modal-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            font-size: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+        }
+        
+        .copy-modal h3 {
+            color: #333;
+            margin: 0 0 25px 0;
+            font-size: 1.5em;
+        }
+        
+        .copy-modal-steps {
+            text-align: left;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .copy-step {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .copy-step:last-child {
+            border-bottom: none;
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .copy-modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .copy-modal-btn {
+            padding: 15px 30px;
+            border-radius: 30px;
+            border: none;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .copy-modal-btn.primary {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        
+        .copy-modal-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(17, 153, 142, 0.4);
+        }
+        
+        .copy-modal-btn.secondary {
+            background: #eee;
+            color: #666;
+        }
+        
+        .copy-modal-btn.secondary:hover {
+            background: #ddd;
+        }
+        
+        .editor-buttons {
+            background: #2d2d2d;
+            padding: 10px 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .editor-buttons-right {
+            margin-left: auto;
+        }
+        
+        .run-btn {
+            background: linear-gradient(135deg, #27ca40 0%, #1db954 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .run-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 202, 64, 0.4);
+        }
+        
+        .reset-btn {
+            background: #555;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        
+        .reset-btn:hover {
+            background: #666;
+        }
+        
+        .output-area {
+            background: #0d0d0d;
+            color: #00ff00;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            min-height: 60px;
+            white-space: pre-wrap;
+            border-top: 1px solid #333;
+        }
+        
+        .output-label {
+            color: #888;
+            font-size: 0.8em;
+            margin-bottom: 5px;
+        }
+        
+        .output-error {
+            color: #ff6b6b;
+        }
+        
+        /* Spoiler */
+        .spoiler-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
+        .spoiler-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .spoiler-content {
+            display: none;
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 2px solid #4caf50;
+        }
+        
+        .spoiler-content.show {
+            display: block;
+        }
+        
+        .spoiler-content h4 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        
+        .spoiler-content pre {
+            background: #2d2d2d;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        
+        /* Inline code */
+        code {
+            background: #e9ecef;
+            color: #e83e8c;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+        
+        /* Tables */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        .info-table th, .info-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .info-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .info-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .info-table code {
+            background: #2d2d2d;
+            color: #d4d4d4;
+        }
+        
+        /* Progress section */
+        .progress-box {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .progress-box h3 {
+            margin-top: 0;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+        }
+        
+        /* Story boxes */
+        .story-box {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: #333;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .story-box.game {
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+        }
+        
+        .story-box.shop {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        }
+        
+        .story-box h4 {
+            margin-top: 0;
+        }
+
+        /* Input styling for Skulpt */
+        .input-prompt {
+            background: #1a1a2e;
+            color: #00ff00;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .input-prompt input {
+            flex: 1;
+            background: #0d0d0d;
+            border: 1px solid #333;
+            color: #00ff00;
+            padding: 8px;
+            font-family: 'Consolas', monospace;
+            border-radius: 4px;
+        }
+        
+        .input-prompt button {
+            background: #27ca40;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>🐍 Python Grunnkurs</h1>
+    <p>Lær programmering fra bunnen av – steg for steg!</p>
+</div>
+
+<nav class="nav">
+    <div class="nav-inner">
+        <a href="#kap1">1. Variabler</a>
+        <a href="#kap2">2. Matematikk</a>
+        <a href="#kap3">3. Modulo</a>
+        <a href="#kap4">4. Tekst</a>
+        <a href="#kap5">5. Input</a>
+        <a href="#kap6">6. If/else</a>
+        <a href="#kap7">7. Sammenligninger</a>
+        <a href="#kap8">8. And/or</a>
+        <a href="#kap9">9. While</a>
+        <a href="#kap10">10. For</a>
+        <a href="#kap11">11. Lister</a>
+        <div class="progress-container">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+        </div>
+        <span class="progress-text" id="progress-text">0/11 moduler</span>
+    </div>
+</nav>
+
+<div class="container">
+
+<!-- INTRODUKSJON -->
+<div class="chapter">
+    <div class="intro-box">
+        <h3>🎯 Velkommen til Python!</h3>
+        <p>I dette kurset lærer du å programmere i Python – et av verdens mest populære programmeringsspråk. Python brukes til alt fra spill og apper til kunstig intelligens!</p>
+        <p>Du har kanskje brukt blokkprogrammering før (som Scratch). Nå skal du skrive <strong>ekte kode</strong> med tekst!</p>
+    </div>
+    
+    <div class="explanation">
+        <h4>Slik fungerer editoren</h4>
+        <p>Under hver forklaring finner du en <strong>kodeeditor</strong>. Slik bruker du den:</p>
+        <ol>
+            <li>Les koden som allerede står der</li>
+            <li>Trykk <strong>▶ Kjør kode</strong> for å se hva som skjer</li>
+            <li>Endre koden og kjør på nytt!</li>
+            <li>Bruk <strong>↺ Nullstill</strong> hvis du vil starte på nytt</li>
+        </ol>
+    </div>
+    
+    <p>La oss starte med det aller første programmet alle skriver:</p>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">mitt_første_program.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-intro" data-original='print("Hei, verden!")
+print("Jeg lærer Python!")'>print("Hei, verden!")
+print("Jeg lærer Python!")</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-intro', 'output-intro')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-intro')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-intro"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="tip">Prøv å endre teksten inni anførselstegnene og kjør koden på nytt!</div>
+</div>
+
+<!-- KAPITTEL 1: VARIABLER -->
+<div class="chapter" id="kap1">
+    <div class="chapter-header">
+        <div class="chapter-number">1</div>
+        <h2 class="chapter-title">Variabler – lagre informasjon</h2>
+    </div>
+    
+    <div class="explanation">
+        <h4>Hva er en variabel?</h4>
+        <p>En <strong>variabel</strong> er som en boks med et navn hvor du kan lagre informasjon. Tenk på det som en merkelapp du setter på en boks:</p>
+        <ul>
+            <li>Boksen kan inneholde hva som helst (tall, tekst, osv.)</li>
+            <li>Merkelappen (navnet) hjelper deg å finne igjen innholdet</li>
+            <li>Du kan bytte ut innholdet når som helst</li>
+        </ul>
+    </div>
+    
+    <p>I Python lager vi variabler med <code>=</code> (likhetstegn):</p>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">variabler.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-1a" data-original='# Lag en variabel
+navn = "Emma"
+
+# Vis innholdet med print()
+print(navn)
+
+# Vi kan også ha flere variabler
+alder = 14
+print(alder)'># Lag en variabel
+navn = "Emma"
+
+# Vis innholdet med print()
+print(navn)
+
+# Vi kan også ha flere variabler
+alder = 14
+print(alder)</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-1a', 'output-1a')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-1a')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-1a"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="explanation">
+        <h4>Regler for variabelnavn</h4>
+        <table class="info-table">
+            <tr>
+                <th>✅ Lov</th>
+                <th>❌ Ikke lov</th>
+            </tr>
+            <tr>
+                <td><code>navn</code></td>
+                <td><code>mitt navn</code> (mellomrom)</td>
+            </tr>
+            <tr>
+                <td><code>alder2</code></td>
+                <td><code>2alder</code> (starter med tall)</td>
+            </tr>
+            <tr>
+                <td><code>min_alder</code></td>
+                <td><code>min-alder</code> (bindestrek)</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="tip">Bruk understrek (_) for å skille ord: <code>antall_elever</code></div>
+    
+    <div class="task">
+        Lag tre variabler: <code>fornavn</code> med ditt navn, <code>etternavn</code> med etternavnet ditt, og <code>fodselsar</code> med året du ble født. Print alle tre!
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">oppgave_1.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-1b" data-original='# Lag dine variabler her:
+
+
+'># Lag dine variabler her:
+
+</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-1b', 'output-1b')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-1b')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-1b"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <button class="spoiler-btn" onclick="toggleSpoiler('spoiler-1b')">🔍 Vis løsning</button>
+    <div id="spoiler-1b" class="spoiler-content">
+        <h4>Løsning:</h4>
+<pre>fornavn = "Emma"
+etternavn = "Hansen"
+fodselsar = 2011
+
+print(fornavn)
+print(etternavn)
+print(fodselsar)</pre>
+    </div>
+    
+    <button class="complete-module-btn" onclick="completeModule(1)">Ferdig med Modul 1 – Registrer fremgang</button>
+</div>
+
+<!-- KAPITTEL 2: MATEMATIKK -->
+<div class="chapter" id="kap2">
+    <div class="chapter-header">
+        <div class="chapter-number">2</div>
+        <h2 class="chapter-title">Matematikk – regn med Python</h2>
+    </div>
+    
+    <div class="story-box">
+        <h4>🎉 Scenario: Klassefesten!</h4>
+        <p>Klasse 8B skal ha fest! Du er ansvarlig for å beregne alle kostnadene. Heldigvis kan Python hjelpe deg med matten!</p>
+    </div>
+    
+    <div class="explanation">
+        <h4>De fire regneartene</h4>
+        <table class="info-table">
+            <tr>
+                <th>Operasjon</th>
+                <th>Symbol</th>
+                <th>Eksempel</th>
+                <th>Resultat</th>
+            </tr>
+            <tr>
+                <td>Addisjon</td>
+                <td><code>+</code></td>
+                <td><code>5 + 3</code></td>
+                <td>8</td>
+            </tr>
+            <tr>
+                <td>Subtraksjon</td>
+                <td><code>-</code></td>
+                <td><code>10 - 4</code></td>
+                <td>6</td>
+            </tr>
+            <tr>
+                <td>Multiplikasjon</td>
+                <td><code>*</code></td>
+                <td><code>6 * 7</code></td>
+                <td>42</td>
+            </tr>
+            <tr>
+                <td>Divisjon</td>
+                <td><code>/</code></td>
+                <td><code>20 / 4</code></td>
+                <td>5.0</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">matte.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-2a" data-original='# Prøv de fire regneartene!
+print(5 + 3)
+print(10 - 4)
+print(6 * 7)
+print(20 / 4)'># Prøv de fire regneartene!
+print(5 + 3)
+print(10 - 4)
+print(6 * 7)
+print(20 / 4)</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-2a', 'output-2a')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-2a')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-2a"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="warning">Divisjon gir alltid desimaltall! <code>20 / 4</code> blir <code>5.0</code>, ikke <code>5</code></div>
+    
+    <h3>Regning med variabler</h3>
+    <p>Det blir mye mer nyttig når vi bruker variabler:</p>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">pizzakalkulator.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-2b" data-original='# Festplanlegging!
+antall_pizzaer = 5
+pris_per_pizza = 149
+
+# Regn ut totalen
+totalpris = antall_pizzaer * pris_per_pizza
+
+print("Antall pizzaer:")
+print(antall_pizzaer)
+print("Totalpris:")
+print(totalpris)'># Festplanlegging!
+antall_pizzaer = 5
+pris_per_pizza = 149
+
+# Regn ut totalen
+totalpris = antall_pizzaer * pris_per_pizza
+
+print("Antall pizzaer:")
+print(antall_pizzaer)
+print("Totalpris:")
+print(totalpris)</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-2b', 'output-2b')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-2b')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-2b"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="task">
+        Endre antall pizzaer til 8. Hva blir den nye totalprisen?
+    </div>
+    
+    <h3>Mer avansert: Budsjettregning</h3>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">budsjett.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-2c" data-original='# Klassefestens budsjett
+budsjett = 2000
+
+# Utgifter
+utgift_pizza = 745
+utgift_brus = 280
+utgift_godteri = 350
+
+# Regn ut hva som er igjen
+brukt = utgift_pizza + utgift_brus + utgift_godteri
+igjen = budsjett - brukt
+
+print("Totalt brukt:")
+print(brukt)
+print("Penger igjen:")
+print(igjen)'># Klassefestens budsjett
+budsjett = 2000
+
+# Utgifter
+utgift_pizza = 745
+utgift_brus = 280
+utgift_godteri = 350
+
+# Regn ut hva som er igjen
+brukt = utgift_pizza + utgift_brus + utgift_godteri
+igjen = budsjett - brukt
+
+print("Totalt brukt:")
+print(brukt)
+print("Penger igjen:")
+print(igjen)</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-2c', 'output-2c')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-2c')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-2c"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="challenge">
+        <h4>🏆 Utfordring: Spleis!</h4>
+        <p>Totalkostnaden for festen er 1500 kr, og dere er 25 elever. Lag et program som regner ut hvor mye hver elev må betale!</p>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">spleis.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-2d" data-original='# Regn ut hvor mye hver må betale
+totalkostnad = 1500
+antall_elever = 25
+
+# Din kode her:
+'># Regn ut hvor mye hver må betale
+totalkostnad = 1500
+antall_elever = 25
+
+# Din kode her:
+</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-2d', 'output-2d')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-2d')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-2d"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <button class="spoiler-btn" onclick="toggleSpoiler('spoiler-2d')">🔍 Vis løsning</button>
+    <div id="spoiler-2d" class="spoiler-content">
+        <h4>Løsning:</h4>
+<pre>totalkostnad = 1500
+antall_elever = 25
+
+pris_per_elev = totalkostnad / antall_elever
+
+print("Hver elev betaler:")
+print(pris_per_elev)
+print("kroner")</pre>
+        <p>Svar: 60.0 kroner per elev</p>
+    </div>
+    
+    <button class="complete-module-btn" onclick="completeModule(2)">Ferdig med Modul 2 – Registrer fremgang</button>
+</div>
+
+<!-- KAPITTEL 3: MODULO -->
+<div class="chapter" id="kap3">
+    <div class="chapter-header">
+        <div class="chapter-number">3</div>
+        <h2 class="chapter-title">Modulo og heltallsdivisjon</h2>
+    </div>
+    
+    <div class="explanation">
+        <h4>To spesielle operatorer</h4>
+        <p>Python har to ekstra nyttige operatorer for divisjon:</p>
+        <table class="info-table">
+            <tr>
+                <th>Operator</th>
+                <th>Navn</th>
+                <th>Hva den gjør</th>
+                <th>Eksempel</th>
+            </tr>
+            <tr>
+                <td><code>//</code></td>
+                <td>Heltallsdivisjon</td>
+                <td>Deler og runder ned til nærmeste heltall</td>
+                <td><code>17 // 5</code> = 3</td>
+            </tr>
+            <tr>
+                <td><code>%</code></td>
+                <td>Modulo</td>
+                <td>Finner <strong>resten</strong> etter divisjon</td>
+                <td><code>17 % 5</code> = 2</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">modulo_intro.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-3a" data-original='# 17 delt på 5 = 3 med 2 i rest
+print("17 // 5 =")
+print(17 // 5)
+
+print("17 % 5 =")
+print(17 % 5)
+
+# Sjekk: 3 * 5 + 2 = 17 ✓'>17 delt på 5 = 3 med 2 i rest
+print("17 // 5 =")
+print(17 // 5)
+
+print("17 % 5 =")
+print(17 % 5)
+
+# Sjekk: 3 * 5 + 2 = 17</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-3a', 'output-3a')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-3a')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-3a"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="story-box">
+        <h4>🍬 Praktisk eksempel: Del godteriet!</h4>
+        <p>Dere har 100 godterier som skal deles på 28 elever. Hvor mange får hver, og hvor mange blir til overs?</p>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">godteri.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-3b" data-original='antall_godteri = 100
+antall_elever = 28
+
+# Hvor mange får hver?
+per_elev = antall_godteri // antall_elever
+
+# Hvor mange til overs?
+til_overs = antall_godteri % antall_elever
+
+print("Godteri per elev:")
+print(per_elev)
+print("Til overs (til læreren?):")
+print(til_overs)'>antall_godteri = 100
+antall_elever = 28
+
+# Hvor mange får hver?
+per_elev = antall_godteri // antall_elever
+
+# Hvor mange til overs?
+til_overs = antall_godteri % antall_elever
+
+print("Godteri per elev:")
+print(per_elev)
+print("Til overs (til laereren?):")
+print(til_overs)</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-3b', 'output-3b')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-3b')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-3b"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="tip">
+        Modulo er perfekt for å sjekke om et tall er partall: <code>tall % 2 == 0</code> betyr at tallet er delelig med 2!
+    </div>
+    
+    <div class="challenge">
+        <h4>🏆 Utfordring: Tidskalkulator</h4>
+        <p>Du har sett en film som er 147 minutter lang. Lag et program som regner ut hvor mange timer og minutter det er!</p>
+        <p><em>Hint: Det er 60 minutter i en time. Bruk // og %</em></p>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">tid.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-3c" data-original='total_minutter = 147
+
+# Din kode her:
+'>total_minutter = 147
+
+# Din kode her:
+</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-3c', 'output-3c')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-3c')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-3c"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <button class="spoiler-btn" onclick="toggleSpoiler('spoiler-3c')">🔍 Vis løsning</button>
+    <div id="spoiler-3c" class="spoiler-content">
+        <h4>Løsning:</h4>
+<pre>total_minutter = 147
+
+timer = total_minutter // 60
+minutter = total_minutter % 60
+
+print("Timer:")
+print(timer)
+print("Minutter:")
+print(minutter)</pre>
+        <p>Svar: 2 timer og 27 minutter</p>
+    </div>
+    
+    <button class="complete-module-btn" onclick="completeModule(3)">Ferdig med Modul 3 – Registrer fremgang</button>
+</div>
+
+<!-- KAPITTEL 4: TEKSTSTRENGER -->
+<div class="chapter" id="kap4">
+    <div class="chapter-header">
+        <div class="chapter-number">4</div>
+        <h2 class="chapter-title">Tekststrenger</h2>
+    </div>
+    
+    <div class="explanation">
+        <h4>Hva er en streng?</h4>
+        <p>En <strong>streng</strong> (string) er tekst. I Python lager vi strenger med anførselstegn:</p>
+        <ul>
+            <li><code>"Hei på deg"</code> – med doble anførselstegn</li>
+            <li><code>'Hei på deg'</code> – med enkle anførselstegn</li>
+        </ul>
+        <p>Begge fungerer likt!</p>
+    </div>
+    
+    <h3>Sette sammen strenger</h3>
+    <p>Vi kan sette sammen strenger med <code>+</code>:</p>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">strenger.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-4a" data-original='fornavn = "Emma"
+etternavn = "Hansen"
+
+# Sett sammen med +
+fullt_navn = fornavn + " " + etternavn
+
+print("Hei, " + fullt_navn + "!")'>fornavn = "Emma"
+etternavn = "Hansen"
+
+# Sett sammen med +
+fullt_navn = fornavn + " " + etternavn
+
+print("Hei, " + fullt_navn + "!")</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-4a', 'output-4a')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-4a')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-4a"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="warning">
+        Du kan ikke sette sammen tekst og tall direkte! <code>"Alder: " + 14</code> gir feil.<br>
+        Bruk <code>str()</code> for å gjøre tall om til tekst: <code>"Alder: " + str(14)</code>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">tekst_og_tall.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-4b" data-original='navn = "Emma"
+alder = 14
+
+# Bruk str() for å gjore tall til tekst
+print("Navn: " + navn)
+print("Alder: " + str(alder) + " ar")'>navn = "Emma"
+alder = 14
+
+# Bruk str() for aa gjore tall til tekst
+print("Navn: " + navn)
+print("Alder: " + str(alder) + " aar")</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-4b', 'output-4b')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-4b')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-4b"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="task">
+        Lag et program som skriver ut en komplett setning om deg selv, f.eks: "Jeg heter Emma og er 14 år gammel."
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">om_meg.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-4c" data-original='# Lag variabler og skriv ut en setning
+'>Lag variabler og skriv ut en setning
+</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-4c', 'output-4c')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-4c')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-4c"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <button class="spoiler-btn" onclick="toggleSpoiler('spoiler-4c')">🔍 Vis løsning</button>
+    <div id="spoiler-4c" class="spoiler-content">
+        <h4>Løsning:</h4>
+<pre>navn = "Emma"
+alder = 14
+
+setning = "Jeg heter " + navn + " og er " + str(alder) + " aar gammel."
+print(setning)</pre>
+    </div>
+    
+    <button class="complete-module-btn" onclick="completeModule(4)">Ferdig med Modul 4 – Registrer fremgang</button>
+</div>
+
+<!-- KAPITTEL 5: INPUT -->
+<div class="chapter" id="kap5">
+    <div class="chapter-header">
+        <div class="chapter-number">5</div>
+        <h2 class="chapter-title">Input – få svar fra brukeren</h2>
+    </div>
+    
+    <div class="explanation">
+        <h4>Hva er input?</h4>
+        <p><code>input()</code> lar programmet stille spørsmål og vente på svar fra brukeren. Det brukeren skriver lagres i en variabel.</p>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">input_demo.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-5a" data-original='navn = input("Hva heter du? ")
+print("Hei, " + navn + "!")'>navn = input("Hva heter du? ")
+print("Hei, " + navn + "!")</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-5a', 'output-5a')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-5a')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-5a"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="warning">
+        <code>input()</code> gir alltid tekst tilbake, selv om brukeren skriver et tall!<br>
+        For å regne med tallet må du bruke <code>int()</code>: <code>alder = int(input("Alder: "))</code>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">alder_input.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-5b" data-original='alder = int(input("Hvor gammel er du? "))
+neste_aar = alder + 1
+print("Neste aar blir du " + str(neste_aar) + " aar!")'>alder = int(input("Hvor gammel er du? "))
+neste_aar = alder + 1
+print("Neste aar blir du " + str(neste_aar) + " aar!")</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-5b', 'output-5b')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-5b')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-5b"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="challenge">
+        <h4>🏆 Utfordring: Enkel kalkulator</h4>
+        <p>Lag et program som spør brukeren om to tall, og deretter skriver ut summen av dem!</p>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">kalkulator.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-5c" data-original='# Lag en enkel kalkulator
+'>Lag en enkel kalkulator
+</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-5c', 'output-5c')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-5c')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-5c"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <button class="spoiler-btn" onclick="toggleSpoiler('spoiler-5c')">🔍 Vis løsning</button>
+    <div id="spoiler-5c" class="spoiler-content">
+        <h4>Løsning:</h4>
+<pre>tall1 = int(input("Skriv inn første tall: "))
+tall2 = int(input("Skriv inn andre tall: "))
+
+summen = tall1 + tall2
+print("Summen er: " + str(summen))</pre>
+    </div>
+    
+    <button class="complete-module-btn" onclick="completeModule(5)">Ferdig med Modul 5 – Registrer fremgang</button>
+</div>
+
+<!-- KAPITTEL 6: IF/ELSE -->
+<div class="chapter" id="kap6">
+    <div class="chapter-header">
+        <div class="chapter-number">6</div>
+        <h2 class="chapter-title">If/else – ta valg i koden</h2>
+    </div>
+    
+    <div class="story-box game">
+        <h4>🎮 Scenario: Lag et spill!</h4>
+        <p>Nå skal vi lære å la programmet ta valg! Dette er essensielt for å lage spill og interaktive programmer.</p>
+    </div>
+    
+    <div class="explanation">
+        <h4>Hvordan if/else fungerer</h4>
+        <p>Med <code>if</code> kan programmet sjekke om noe er sant, og gjøre forskjellige ting basert på svaret:</p>
+        <ul>
+            <li><code>if</code> – "Hvis dette er sant..."</li>
+            <li><code>else</code> – "Ellers..."</li>
+            <li><code>elif</code> – "Ellers hvis..." (else if)</li>
+        </ul>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">if_else.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-6a" data-original='alder = 14
+
+if alder >= 18:
+    print("Du er voksen!")
+else:
+    print("Du er fortsatt ung!")'>alder = 14
+
+if alder >= 18:
+    print("Du er voksen!")
+else:
+    print("Du er fortsatt ung!")</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-6a', 'output-6a')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-6a')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-6a"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="warning">
+        <strong>Viktig!</strong> Koden inne i if/else MÅ ha innrykk (4 mellomrom eller Tab). Dette forteller Python hva som hører til if-setningen.
+    </div>
+    
+    <div class="task">Endre <code>alder</code> til 20 og kjør koden igjen. Hva skjer?</div>
+    
+    <h3>Flere valg med elif</h3>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">karakterer.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-6b" data-original='poeng = 85
+
+if poeng >= 90:
+    print("Karakter: 6")
+elif poeng >= 75:
+    print("Karakter: 5")
+elif poeng >= 60:
+    print("Karakter: 4")
+elif poeng >= 40:
+    print("Karakter: 3")
+else:
+    print("Karakter: 2")'>poeng = 85
+
+if poeng >= 90:
+    print("Karakter: 6")
+elif poeng >= 75:
+    print("Karakter: 5")
+elif poeng >= 60:
+    print("Karakter: 4")
+elif poeng >= 40:
+    print("Karakter: 3")
+else:
+    print("Karakter: 2")</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-6b', 'output-6b')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-6b')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-6b"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="challenge">
+        <h4>🏆 Utfordring: Passordsjekk</h4>
+        <p>Lag et program som spør om et passord. Hvis passordet er "hemmelig123", skriv "Tilgang godkjent!". Ellers skriv "Feil passord!"</p>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">passord.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-6c" data-original='# Lag passordsjekk
+'>Lag passordsjekk
+</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-6c', 'output-6c')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-6c')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-6c"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <button class="spoiler-btn" onclick="toggleSpoiler('spoiler-6c')">🔍 Vis løsning</button>
+    <div id="spoiler-6c" class="spoiler-content">
+        <h4>Løsning:</h4>
+<pre>passord = input("Skriv inn passord: ")
+
+if passord == "hemmelig123":
+    print("Tilgang godkjent!")
+else:
+    print("Feil passord!")</pre>
+    </div>
+    
+    <button class="complete-module-btn" onclick="completeModule(6)">Ferdig med Modul 6 – Registrer fremgang</button>
+</div>
+
+<!-- KAPITTEL 7: SAMMENLIGNINGER -->
+<div class="chapter" id="kap7">
+    <div class="chapter-header">
+        <div class="chapter-number">7</div>
+        <h2 class="chapter-title">Sammenligninger</h2>
+    </div>
+    
+    <div class="explanation">
+        <h4>Sammenligningsoperatorer</h4>
+        <p>For å sammenligne verdier bruker vi disse operatorene:</p>
+        <table class="info-table">
+            <tr>
+                <th>Operator</th>
+                <th>Betydning</th>
+                <th>Eksempel</th>
+                <th>Resultat</th>
+            </tr>
+            <tr>
+                <td><code>==</code></td>
+                <td>Er lik</td>
+                <td><code>5 == 5</code></td>
+                <td>True</td>
+            </tr>
+            <tr>
+                <td><code>!=</code></td>
+                <td>Er ikke lik</td>
+                <td><code>5 != 3</code></td>
+                <td>True</td>
+            </tr>
+            <tr>
+                <td><code>&lt;</code></td>
+                <td>Mindre enn</td>
+                <td><code>3 &lt; 5</code></td>
+                <td>True</td>
+            </tr>
+            <tr>
+                <td><code>&gt;</code></td>
+                <td>Større enn</td>
+                <td><code>5 &gt; 3</code></td>
+                <td>True</td>
+            </tr>
+            <tr>
+                <td><code>&lt;=</code></td>
+                <td>Mindre enn eller lik</td>
+                <td><code>5 &lt;= 5</code></td>
+                <td>True</td>
+            </tr>
+            <tr>
+                <td><code>&gt;=</code></td>
+                <td>Større enn eller lik</td>
+                <td><code>5 &gt;= 3</code></td>
+                <td>True</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="warning">
+        <code>=</code> og <code>==</code> er forskjellige!<br>
+        <code>=</code> setter en verdi: <code>x = 5</code><br>
+        <code>==</code> sammenligner: <code>x == 5</code>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">sammenligning.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-7a" data-original='# Test sammenligninger
+x = 10
+
+print("x == 10:")
+print(x == 10)
+
+print("x != 5:")
+print(x != 5)
+
+print("x > 5:")
+print(x > 5)
+
+print("x < 5:")
+print(x < 5)'>x = 10
+
+print("x == 10:")
+print(x == 10)
+
+print("x != 5:")
+print(x != 5)
+
+print("x > 5:")
+print(x > 5)
+
+print("x < 5:")
+print(x < 5)</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-7a', 'output-7a')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-7a')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-7a"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="challenge">
+        <h4>🏆 Utfordring: Aldergrense</h4>
+        <p>Lag et program som spør om alder og sjekker om personen kan:</p>
+        <ul>
+            <li>Se en film med 12-årsgrense</li>
+            <li>Ta mopedlappen (16 år)</li>
+            <li>Ta billappen (18 år)</li>
+        </ul>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">aldersgrense.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-7b" data-original='# Sjekk aldersgrenser
+'>Sjekk aldersgrenser
+</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-7b', 'output-7b')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-7b')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-7b"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <button class="spoiler-btn" onclick="toggleSpoiler('spoiler-7b')">🔍 Vis løsning</button>
+    <div id="spoiler-7b" class="spoiler-content">
+        <h4>Løsning:</h4>
+<pre>alder = int(input("Hvor gammel er du? "))
+
+if alder >= 12:
+    print("Du kan se filmer med 12-aarsgrense!")
+if alder >= 16:
+    print("Du kan ta mopedlappen!")
+if alder >= 18:
+    print("Du kan ta billappen!")</pre>
+    </div>
+    
+    <button class="complete-module-btn" onclick="completeModule(7)">Ferdig med Modul 7 – Registrer fremgang</button>
+</div>
+
+<!-- KAPITTEL 8: AND/OR -->
+<div class="chapter" id="kap8">
+    <div class="chapter-header">
+        <div class="chapter-number">8</div>
+        <h2 class="chapter-title">And, or, not – logiske operatorer</h2>
+    </div>
+    
+    <div class="explanation">
+        <h4>Kombinere betingelser</h4>
+        <p>Noen ganger vil vi sjekke flere ting samtidig:</p>
+        <table class="info-table">
+            <tr>
+                <th>Operator</th>
+                <th>Betydning</th>
+                <th>Eksempel</th>
+            </tr>
+            <tr>
+                <td><code>and</code></td>
+                <td>Begge må være True</td>
+                <td><code>x > 5 and x < 10</code></td>
+            </tr>
+            <tr>
+                <td><code>or</code></td>
+                <td>Minst én må være True</td>
+                <td><code>x == 5 or x == 10</code></td>
+            </tr>
+            <tr>
+                <td><code>not</code></td>
+                <td>Snur True til False og omvendt</td>
+                <td><code>not x == 5</code></td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">and_or.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-8a" data-original='alder = 15
+har_billett = True
+
+# Begge ma vaere oppfylt for aa komme inn
+if alder >= 13 and har_billett:
+    print("Velkommen til konserten!")
+else:
+    print("Beklager, du kommer ikke inn.")'>alder = 15
+har_billett = True
+
+# Begge maa vaere oppfylt for aa komme inn
+if alder >= 13 and har_billett:
+    print("Velkommen til konserten!")
+else:
+    print("Beklager, du kommer ikke inn.")</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-8a', 'output-8a')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-8a')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-8a"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="task">Endre <code>har_billett</code> til <code>False</code> og se hva som skjer!</div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">helg.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-8b" data-original='dag = "lordag"
+
+# Er det helg? (lordag ELLER sondag)
+if dag == "lordag" or dag == "sondag":
+    print("Det er helg! Sov lenge!")
+else:
+    print("Det er hverdag. Opp og staa!")'>dag = "lordag"
+
+# Er det helg? (lordag ELLER sondag)
+if dag == "lordag" or dag == "sondag":
+    print("Det er helg! Sov lenge!")
+else:
+    print("Det er hverdag. Opp og staa!")</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-8b', 'output-8b')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-8b')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-8b"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="challenge">
+        <h4>🏆 Utfordring: Rabattsjekk</h4>
+        <p>En kino gir rabatt hvis du er under 16 ELLER over 65 år. Lag et program som sjekker om en person får rabatt!</p>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">rabatt.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-8c" data-original='# Sjekk om personen faar rabatt
+'>Sjekk om personen faar rabatt
+</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-8c', 'output-8c')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-8c')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-8c"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <button class="spoiler-btn" onclick="toggleSpoiler('spoiler-8c')">🔍 Vis løsning</button>
+    <div id="spoiler-8c" class="spoiler-content">
+        <h4>Løsning:</h4>
+<pre>alder = int(input("Hvor gammel er du? "))
+
+if alder < 16 or alder > 65:
+    print("Du faar rabatt!")
+else:
+    print("Ingen rabatt, beklager.")</pre>
+    </div>
+    
+    <button class="complete-module-btn" onclick="completeModule(8)">Ferdig med Modul 8 – Registrer fremgang</button>
+</div>
+
+<!-- KAPITTEL 9: WHILE-LØKKER -->
+<div class="chapter" id="kap9">
+    <div class="chapter-header">
+        <div class="chapter-number">9</div>
+        <h2 class="chapter-title">While-løkker – gjenta til ferdig</h2>
+    </div>
+    
+    <div class="story-box game">
+        <h4>🔢 Scenario: Gjetteleken!</h4>
+        <p>Vi skal lage et spill hvor brukeren må gjette et hemmelig tall. Programmet skal fortsette å spørre til brukeren gjetter riktig!</p>
+    </div>
+    
+    <div class="explanation">
+        <h4>Hva er en while-løkke?</h4>
+        <p>En <code>while</code>-løkke gjentar kode <strong>så lenge</strong> en betingelse er sann. Den fortsetter til betingelsen blir usann.</p>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">while_intro.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-9a" data-original='# Tell fra 1 til 5
+tall = 1
+
+while tall <= 5:
+    print(tall)
+    tall = tall + 1
+
+print("Ferdig!")'>tall = 1
+
+while tall <= 5:
+    print(tall)
+    tall = tall + 1
+
+print("Ferdig!")</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-9a', 'output-9a')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-9a')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-9a"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="warning">
+        Pass på at betingelsen til slutt blir usann! Ellers får du en <strong>uendelig løkke</strong> som aldri stopper.
+    </div>
+    
+    <h3>Gjetteleken</h3>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">gjettelek.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-9b" data-original='hemmelig = 7
+gjett = 0
+
+while gjett != hemmelig:
+    gjett = int(input("Gjett tallet (1-10): "))
+    if gjett < hemmelig:
+        print("For lavt!")
+    elif gjett > hemmelig:
+        print("For hoeyt!")
+
+print("Riktig! Du klarte det!")'>hemmelig = 7
+gjett = 0
+
+while gjett != hemmelig:
+    gjett = int(input("Gjett tallet (1-10): "))
+    if gjett < hemmelig:
+        print("For lavt!")
+    elif gjett > hemmelig:
+        print("For hoyt!")
+
+print("Riktig! Du klarte det!")</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-9b', 'output-9b')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-9b')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-9b"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="challenge">
+        <h4>🏆 Utfordring: Nedtelling</h4>
+        <p>Lag et program som teller ned fra 10 til 1, og deretter skriver "LIFT OFF!" 🚀</p>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">nedtelling.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-9c" data-original='# Lag nedtelling
+'>Lag nedtelling
+</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-9c', 'output-9c')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-9c')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-9c"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <button class="spoiler-btn" onclick="toggleSpoiler('spoiler-9c')">🔍 Vis løsning</button>
+    <div id="spoiler-9c" class="spoiler-content">
+        <h4>Løsning:</h4>
+<pre>tall = 10
+
+while tall >= 1:
+    print(tall)
+    tall = tall - 1
+
+print("LIFT OFF!")</pre>
+    </div>
+    
+    <button class="complete-module-btn" onclick="completeModule(9)">Ferdig med Modul 9 – Registrer fremgang</button>
+</div>
+
+<!-- KAPITTEL 10: FOR-LØKKER -->
+<div class="chapter" id="kap10">
+    <div class="chapter-header">
+        <div class="chapter-number">10</div>
+        <h2 class="chapter-title">For-løkker og range()</h2>
+    </div>
+    
+    <div class="explanation">
+        <h4>Hva er en for-løkke?</h4>
+        <p>En <code>for</code>-løkke gjentar kode et <strong>bestemt antall ganger</strong>. Den er perfekt når du vet hvor mange ganger du vil gjenta noe.</p>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">for_intro.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-10a" data-original='# Skriv "Hei!" 5 ganger
+for i in range(5):
+    print("Hei!")'>for i in range(5):
+    print("Hei!")</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-10a', 'output-10a')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-10a')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-10a"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="explanation">
+        <h4>range() forklart</h4>
+        <table class="info-table">
+            <tr>
+                <th>Kode</th>
+                <th>Gir tallene</th>
+            </tr>
+            <tr>
+                <td><code>range(5)</code></td>
+                <td>0, 1, 2, 3, 4</td>
+            </tr>
+            <tr>
+                <td><code>range(1, 6)</code></td>
+                <td>1, 2, 3, 4, 5</td>
+            </tr>
+            <tr>
+                <td><code>range(0, 10, 2)</code></td>
+                <td>0, 2, 4, 6, 8 (teller med 2)</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">range_demo.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-10b" data-original='# Tell fra 1 til 10
+for tall in range(1, 11):
+    print(tall)'>for tall in range(1, 11):
+    print(tall)</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-10b', 'output-10b')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-10b')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-10b"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="tip">
+        <code>range(1, 11)</code> gir 1-10, ikke 1-11! Sluttallet er alltid utelukket.
+    </div>
+    
+    <div class="challenge">
+        <h4>🏆 Utfordring: Gangetabell</h4>
+        <p>Lag et program som skriver ut 7-gangen fra 7*1 til 7*10!</p>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">gangetabell.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-10c" data-original='# Skriv ut 7-gangen
+'>Skriv ut 7-gangen
+</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-10c', 'output-10c')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-10c')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-10c"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <button class="spoiler-btn" onclick="toggleSpoiler('spoiler-10c')">🔍 Vis løsning</button>
+    <div id="spoiler-10c" class="spoiler-content">
+        <h4>Løsning:</h4>
+<pre>for i in range(1, 11):
+    svar = 7 * i
+    print("7 * " + str(i) + " = " + str(svar))</pre>
+    </div>
+    
+    <button class="complete-module-btn" onclick="completeModule(10)">Ferdig med Modul 10 – Registrer fremgang</button>
+</div>
+
+<!-- KAPITTEL 11: LISTER -->
+<div class="chapter" id="kap11">
+    <div class="chapter-header">
+        <div class="chapter-number">11</div>
+        <h2 class="chapter-title">Lister – samle mange verdier</h2>
+    </div>
+    
+    <div class="story-box shop">
+        <h4>🛒 Scenario: Nettbutikken!</h4>
+        <p>Du driver en nettbutikk og trenger å holde styr på mange produkter. En liste lar deg samle alt på ett sted!</p>
+    </div>
+    
+    <div class="explanation">
+        <h4>Hva er en liste?</h4>
+        <p>En <strong>liste</strong> er en samling av verdier. Tenk på det som en handleliste!</p>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">lister_intro.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-11a" data-original='# Lag en liste med hakeparenteser []
+frukter = ["eple", "banan", "appelsin"]
+print(frukter)
+
+# Hent ett element (starter paa 0!)
+print(frukter[0])
+print(frukter[1])
+print(frukter[2])'>frukter = ["eple", "banan", "appelsin"]
+print(frukter)
+
+# Hent ett element (starter paa 0!)
+print(frukter[0])
+print(frukter[1])
+print(frukter[2])</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-11a', 'output-11a')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-11a')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-11a"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="warning">
+        Lister starter på <strong>0</strong>, ikke 1! Det første elementet er <code>liste[0]</code>
+    </div>
+    
+    <h3>Legge til og fjerne</h3>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">liste_endre.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-11b" data-original='handleliste = ["melk", "broed", "ost"]
+print("Foer:")
+print(handleliste)
+
+# Legg til med .append()
+handleliste.append("egg")
+print("Etter append:")
+print(handleliste)
+
+# Fjern med .remove()
+handleliste.remove("broed")
+print("Etter remove:")
+print(handleliste)'>handleliste = ["melk", "broed", "ost"]
+print("Foer:")
+print(handleliste)
+
+# Legg til med .append()
+handleliste.append("egg")
+print("Etter append:")
+print(handleliste)
+
+# Fjern med .remove()
+handleliste.remove("broed")
+print("Etter remove:")
+print(handleliste)</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-11b', 'output-11b')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-11b')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-11b"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <h3>Gå gjennom en liste med for</h3>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">liste_for.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-11c" data-original='elever = ["Emma", "Noah", "Sofie", "William"]
+
+print("Elever i klassen:")
+for elev in elever:
+    print("- " + elev)
+
+print("Totalt: " + str(len(elever)) + " elever")'>elever = ["Emma", "Noah", "Sofie", "William"]
+
+print("Elever i klassen:")
+for elev in elever:
+    print("- " + elev)
+
+print("Totalt: " + str(len(elever)) + " elever")</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-11c', 'output-11c')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-11c')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-11c"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <div class="tip">
+        <code>len(liste)</code> gir antall elementer i listen!
+    </div>
+    
+    <div class="challenge">
+        <h4>🏆 Utfordring: Karaktersnitt</h4>
+        <p>Lag en liste med 5 karakterer (tall). Bruk en for-løkke til å regne ut snittet!</p>
+        <p><em>Hint: Summer alle tallene, del på antall elementer</em></p>
+    </div>
+    
+    <div class="code-editor">
+        <div class="editor-header">
+            <div class="editor-title">
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span class="editor-dot"></span>
+                <span style="margin-left: 10px;">snitt.py</span>
+            </div>
+        </div>
+        <textarea class="code-textarea" id="code-11d" data-original='# Regn ut karaktersnitt
+karakterer = [5, 4, 6, 4, 5]
+
+# Din kode her:
+'>karakterer = [5, 4, 6, 4, 5]
+
+# Din kode her:
+</textarea>
+        <div class="editor-buttons">
+            <button class="run-btn" onclick="runCode('code-11d', 'output-11d')">▶ Kjør kode</button>
+            <button class="reset-btn" onclick="resetCode('code-11d')">↺ Nullstill</button>
+            <button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullskjerm</button>
+        </div>
+        <div class="output-area" id="output-11d"><span class="output-label">Output vises her...</span></div>
+    </div>
+    
+    <button class="spoiler-btn" onclick="toggleSpoiler('spoiler-11d')">🔍 Vis løsning</button>
+    <div id="spoiler-11d" class="spoiler-content">
+        <h4>Løsning:</h4>
+<pre>karakterer = [5, 4, 6, 4, 5]
+
+total = 0
+for k in karakterer:
+    total = total + k
+
+snitt = total / len(karakterer)
+print("Karaktersnitt: " + str(snitt))</pre>
+        <p>Svar: 4.8</p>
+    </div>
+    
+    <button class="complete-module-btn" onclick="completeModule(11)">Ferdig med Modul 11 – Registrer fremgang</button>
+</div>
+
+<!-- AVSLUTNING -->
+<div class="chapter">
+    <div class="progress-box">
+        <h3>🎓 Gratulerer – du har fullført kurset!</h3>
+        <p>Du har nå lært:</p>
+        <ul>
+            <li>✅ Variabler og datatyper</li>
+            <li>✅ Matematiske operasjoner</li>
+            <li>✅ Heltallsdivisjon og modulo</li>
+            <li>✅ Tekststrenger</li>
+            <li>✅ Input fra bruker</li>
+            <li>✅ If/elif/else betingelser</li>
+            <li>✅ Sammenligningsoperatorer</li>
+            <li>✅ Logiske operatorer (and, or, not)</li>
+            <li>✅ While-løkker</li>
+            <li>✅ For-løkker og range()</li>
+            <li>✅ Lister</li>
+        </ul>
+        <p><strong>Neste steg:</strong> Funksjoner, dictionaries, filhåndtering og mer!</p>
+    </div>
+    
+    <button class="complete-module-btn" onclick="completeModule(12)" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">🎉 Jeg har fullført HELE kurset! Registrer fullføring</button>
+</div>
+
+</div>
+
+<div class="footer">
+    <p>🐍 Python Grunnkurs • Laget for 8. trinn</p>
+</div>
+
+<script>
+// Store CodeMirror instances
+const editors = {};
+
+// Initialize CodeMirror on all textareas
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.code-textarea').forEach(textarea => {
+        const editor = CodeMirror.fromTextArea(textarea, {
+            mode: 'python',
+            theme: 'dracula',
+            lineNumbers: true,
+            matchBrackets: true,
+            autoCloseBrackets: true,
+            indentUnit: 4,
+            tabSize: 4,
+            indentWithTabs: false,
+            lineWrapping: true,
+            viewportMargin: Infinity
+        });
+        
+        editors[textarea.id] = editor;
+        
+        // Store original code for reset
+        editor.originalCode = textarea.getAttribute('data-original');
+    });
+    
+    updateProgressBar();
+});
+
+// Skulpt configuration
+function builtinRead(x) {
+    if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+        throw "File not found: '" + x + "'";
+    return Sk.builtinFiles["files"][x];
+}
+
+function runCode(codeId, outputId) {
+    const editor = editors[codeId];
+    const code = editor ? editor.getValue() : document.getElementById(codeId).value;
+    const outputArea = document.getElementById(outputId);
+    outputArea.innerHTML = '';
+    
+    // Configure Skulpt
+    Sk.configure({
+        output: function(text) {
+            outputArea.innerHTML += text;
+        },
+        read: builtinRead,
+        inputfun: function(prompt) {
+            return new Promise(function(resolve) {
+                outputArea.innerHTML += prompt;
+                
+                const inputDiv = document.createElement('div');
+                inputDiv.className = 'input-prompt';
+                
+                const inputField = document.createElement('input');
+                inputField.type = 'text';
+                inputField.placeholder = 'Skriv her og trykk Enter...';
+                
+                const submitBtn = document.createElement('button');
+                submitBtn.textContent = 'OK';
+                
+                inputDiv.appendChild(inputField);
+                inputDiv.appendChild(submitBtn);
+                outputArea.appendChild(inputDiv);
+                
+                inputField.focus();
+                
+                function submitInput() {
+                    const value = inputField.value;
+                    outputArea.innerHTML += value + '\n';
+                    inputDiv.remove();
+                    resolve(value);
+                }
+                
+                inputField.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') submitInput();
+                });
+                
+                submitBtn.addEventListener('click', submitInput);
+            });
+        },
+        inputfunTakesPrompt: true,
+    });
+    
+    Sk.misceval.asyncToPromise(function() {
+        return Sk.importMainWithBody("<stdin>", false, code, true);
+    }).catch(function(err) {
+        outputArea.innerHTML += '<span class="output-error">Feil: ' + err.toString() + '</span>';
+    });
+}
+
+function resetCode(codeId) {
+    const editor = editors[codeId];
+    if (editor && editor.originalCode) {
+        editor.setValue(editor.originalCode);
+    }
+}
+
+function toggleFullscreen(btn) {
+    const editorDiv = btn.closest('.code-editor');
+    const codeId = editorDiv.querySelector('.code-textarea').id;
+    const cmEditor = editors[codeId];
+    
+    if (editorDiv.classList.contains('fullscreen')) {
+        editorDiv.classList.remove('fullscreen');
+        btn.textContent = '⛶ Fullskjerm';
+        document.body.style.overflow = '';
+    } else {
+        editorDiv.classList.add('fullscreen');
+        btn.textContent = '✕ Lukk';
+        document.body.style.overflow = 'hidden';
+    }
+    
+    if (cmEditor) cmEditor.refresh();
+}
+
+function completeModule(moduleNumber) {
+    const chapter = document.getElementById('kap' + moduleNumber);
+    if (!chapter && moduleNumber !== 12) {
+        window.open(FORM_URLS[12], '_blank');
+        return;
+    }
+    
+    let allCode = '';
+    
+    if (moduleNumber !== 12) {
+        const textareas = chapter.querySelectorAll('.code-textarea');
+        textareas.forEach((textarea, index) => {
+            const editor = editors[textarea.id];
+            const code = editor ? editor.getValue() : textarea.value;
+            allCode += `# === Oppgave ${index + 1} ===\n`;
+            allCode += code.trim();
+            allCode += '\n\n';
+        });
+    }
+    
+    if (allCode) {
+        navigator.clipboard.writeText(allCode).then(() => {
+            showCopyModal(moduleNumber);
+        }).catch(err => {
+            const tempTextarea = document.createElement('textarea');
+            tempTextarea.value = allCode;
+            document.body.appendChild(tempTextarea);
+            tempTextarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextarea);
+            showCopyModal(moduleNumber);
+        });
+    } else {
+        window.open(FORM_URLS[moduleNumber], '_blank');
+        markModuleComplete(moduleNumber);
+    }
+}
+
+function showCopyModal(moduleNumber) {
+    const modal = document.createElement('div');
+    modal.className = 'copy-modal-overlay';
+    modal.innerHTML = `
+        <div class="copy-modal">
+            <div class="copy-modal-icon">✓</div>
+            <h3>Koden din er kopiert!</h3>
+            <div class="copy-modal-steps">
+                <div class="copy-step">
+                    <span class="step-number">1</span>
+                    <span>Klikk <strong>"Åpne skjema"</strong> under</span>
+                </div>
+                <div class="copy-step">
+                    <span class="step-number">2</span>
+                    <span>Finn feltet <strong>"Din kode"</strong> i skjemaet</span>
+                </div>
+                <div class="copy-step">
+                    <span class="step-number">3</span>
+                    <span>Trykk <strong>Ctrl + V</strong> for å lime inn</span>
+                </div>
+                <div class="copy-step">
+                    <span class="step-number">4</span>
+                    <span>Trykk <strong>"Send"</strong></span>
+                </div>
+            </div>
+            <div class="copy-modal-buttons">
+                <button class="copy-modal-btn primary" onclick="openFormAndClose(${moduleNumber})">📝 Åpne skjema</button>
+                <button class="copy-modal-btn secondary" onclick="closeModal()">Avbryt</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+}
+
+function openFormAndClose(moduleNumber) {
+    window.open(FORM_URLS[moduleNumber], '_blank');
+    markModuleComplete(moduleNumber);
+    closeModal();
+}
+
+function closeModal() {
+    const modal = document.querySelector('.copy-modal-overlay');
+    if (modal) modal.remove();
+}
+
+function markModuleComplete(moduleNumber) {
+    const completed = JSON.parse(localStorage.getItem('pythonProgress') || '[]');
+    if (!completed.includes(moduleNumber)) {
+        completed.push(moduleNumber);
+        localStorage.setItem('pythonProgress', JSON.stringify(completed));
+    }
+    updateProgressBar();
+}
+
+function updateProgressBar() {
+    const completed = JSON.parse(localStorage.getItem('pythonProgress') || '[]');
+    const percent = Math.round((completed.length / 11) * 100);
+    
+    const progressFill = document.getElementById('progress-fill');
+    const progressText = document.getElementById('progress-text');
+    
+    if (progressFill) progressFill.style.width = percent + '%';
+    if (progressText) progressText.textContent = completed.length + '/11 moduler';
+    
+    completed.forEach(num => {
+        const link = document.querySelector(`.nav a[href="#kap${num}"]`);
+        if (link && !link.textContent.includes('✓')) {
+            link.textContent = '✓ ' + link.textContent;
+            link.style.color = '#38ef7d';
+        }
+    });
+}
+
+function toggleSpoiler(id) {
+    const spoiler = document.getElementById(id);
+    const btn = spoiler.previousElementSibling;
+    
+    if (spoiler.classList.contains('show')) {
+        spoiler.classList.remove('show');
+        btn.textContent = '🔍 Vis løsning';
+    } else {
+        spoiler.classList.add('show');
+        btn.textContent = '🙈 Skjul løsning';
+    }
+}
+</script>
+
+</body>
+</html>
