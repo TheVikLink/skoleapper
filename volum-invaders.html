@@ -11,7 +11,6 @@
       --info:#08f7fe;
       --warn:#ffe66d;
       --text:#e6e6ff;
-      --muted:#9aa;
       --panel:rgba(15, 15, 40, 0.85);
     }
 
@@ -597,7 +596,7 @@
       <div>
         <div class="title">👾 Volum Invaders</div>
         <div class="sub">
-          Space Invaders for volumenheter. Nå med låst målenhet i spørsmålet, så det aldri kan finnes flere korrekte svar samtidig.
+          Ny versjon med snillere hopp. Store kubikkenheter er strammet inn, og blandet nivå holder seg til gode broer.
         </div>
       </div>
       <div class="pill">Taster: <b>1</b> <b>2</b> <b>3</b> · Offline</div>
@@ -610,9 +609,9 @@
           <select id="levelSel">
             <option value="1">Nivå 1: mL, cL, dL, L</option>
             <option value="2">Nivå 2: mm³, cm³, dm³, m³</option>
-            <option value="3">Nivå 3: mL–kL (inkl. daL, hL, kL)</option>
-            <option value="4">Nivå 4: mm³–km³ (inkl. dam³, hm³, km³)</option>
-            <option value="5">Nivå 5: Alt blandet</option>
+            <option value="3">Nivå 3: mL–kL</option>
+            <option value="4">Nivå 4: mm³–km³ (snille kubikkhopp)</option>
+            <option value="5">Nivå 5: Blandet, men pedagogisk</option>
           </select>
         </div>
 
@@ -622,9 +621,9 @@
       </div>
 
       <div class="hint">
-        <div>• Spørsmålene er nå på formen <code>10 dL = ? mL</code>, ikke bare <code>10 dL = ?</code>.</div>
-        <div>• Dermed finnes det bare <b>ett</b> riktig alternativ.</div>
-        <div>• Spillet starter lett og øker gradvis i fart og vanskelighetsgrad.</div>
+        <div>• Nivå 4 unngår monsterhopp som <code>dam³ → cL</code>.</div>
+        <div>• Nivå 5 bruker bare gode blandinger som <code>dm³ ↔ L</code>, <code>cm³ ↔ mL</code> og <code>m³ ↔ L</code>.</div>
+        <div>• Spørsmålene viser alltid målenheten: <code>10 dL = ? mL</code>.</div>
       </div>
     </div>
   </div>
@@ -642,7 +641,7 @@
     <div class="overlay-body">
       <div id="introContent"></div>
       <div class="overlay-note">
-        Tips: Se alltid på <code>målenheten etter spørsmålstegnet</code>. Den bestemmer hvilket svar som faktisk er riktig.
+        Tips: Se først på enheten etter spørsmålstegnet. Det er alltid den du skal ende opp med.
       </div>
     </div>
   </div>
@@ -740,6 +739,10 @@
       .replace(/(\.\d*?)0+$/,'$1');
   }
 
+  function isNiceInteger(n){
+    return Math.abs(n - Math.round(n)) < 1e-9;
+  }
+
   const U = {
     mL:   {name:"mL",   factor:0.001, family:"L"},
     cL:   {name:"cL",   factor:0.01,  family:"L"},
@@ -764,7 +767,8 @@
   const C2_UNITS = [U.mm3, U.cm3, U.dm3, U.m3];
   const C4_UNITS = [U.mm3, U.cm3, U.dm3, U.m3, U.dam3, U.hm3, U.km3];
 
-  const ALL_UNITS = [...L3_UNITS, ...C4_UNITS];
+  // Bevisst trygg blandingspool: ingen dam³, hm³, km³ her
+  const MIXED_SAFE_UNITS = [...L3_UNITS, ...C2_UNITS];
 
   function convert(value, fromU, toU){
     const liters = value * fromU.factor;
@@ -780,16 +784,15 @@
             <tr><td><b>mL ↔ cL ↔ dL ↔ L</b></td><td>Hvert trinn: <b>×10</b> nedover, <b>÷10</b> oppover</td><td>5 dL = 50 cL</td></tr>
             <tr><td>10 dL = 1 L</td><td>÷10 opp</td><td>5 dL = 0.5 L</td></tr>
             <tr><td>100 cL = 1 L</td><td>÷100 opp</td><td>50 cL = 0.5 L</td></tr>
-            <tr><td>1000 mL = 1 L</td><td>÷1000 opp</td><td>2000 mL = 2 L</td></tr>
           </tbody>
         </table>`;
     }
     if(mode===2){
       return `
         <table class="table">
-          <thead><tr><th>Nivå 2</th><th>Regel</th><th>Kraftregel</th></tr></thead>
+          <thead><tr><th>Nivå 2</th><th>Regel</th><th>Eksempel</th></tr></thead>
           <tbody>
-            <tr><td><b>mm³ ↔ cm³ ↔ dm³ ↔ m³</b></td><td>Hvert trinn: <b>×1000</b> nedover, <b>÷1000</b> oppover</td><td>Kubikk gir 1000 per steg</td></tr>
+            <tr><td><b>mm³ ↔ cm³ ↔ dm³ ↔ m³</b></td><td>Hvert trinn: <b>×1000</b> nedover, <b>÷1000</b> oppover</td><td>2 dm³ = 2000 cm³</td></tr>
             <tr><td colspan="3"><code>1 m³ = 1000 dm³ = 1 000 000 cm³ = 1 000 000 000 mm³</code></td></tr>
           </tbody>
         </table>`;
@@ -799,7 +802,7 @@
         <table class="table">
           <thead><tr><th>Nivå 3</th><th>Liter-stigen</th><th>Regel</th></tr></thead>
           <tbody>
-            <tr><td><b>mL → cL → dL → L → daL → hL → kL</b></td><td>milli, centi, desi, (L), deka, hekto, kilo</td><td>Hvert trinn: <b>×10</b></td></tr>
+            <tr><td><b>mL → cL → dL → L → daL → hL → kL</b></td><td>Hvert trinn: <b>×10</b></td><td>5 L = 50 dL</td></tr>
             <tr><td><code>1 daL = 10 L</code></td><td>deka</td><td>×10</td></tr>
             <tr><td><code>1 hL = 100 L</code></td><td>hekto</td><td>×100</td></tr>
             <tr><td><code>1 kL = 1000 L</code></td><td>kilo</td><td>×1000</td></tr>
@@ -811,7 +814,7 @@
         <table class="table">
           <thead><tr><th>Nivå 4</th><th>Kubikk-stigen</th><th>Regel</th></tr></thead>
           <tbody>
-            <tr><td><b>mm³ → cm³ → dm³ → m³ → dam³ → hm³ → km³</b></td><td>Hvert trinn: <b>×1000</b></td><td>Volum vokser voldsomt</td></tr>
+            <tr><td><b>mm³ → cm³ → dm³ → m³ → dam³ → hm³ → km³</b></td><td>Hvert trinn: <b>×1000</b></td><td>Men vi bruker bare snille hopp</td></tr>
             <tr><td><code>1 dam³ = 1000 m³</code></td><td>×1000</td><td>= 1 000 000 L</td></tr>
             <tr><td><code>1 hm³ = 1000 dam³</code></td><td>×1000</td><td>= 1 000 000 000 L</td></tr>
             <tr><td><code>1 km³ = 1000 hm³</code></td><td>×1000</td><td>= 1 000 000 000 000 L</td></tr>
@@ -825,6 +828,7 @@
           <tr><td><code>1 dm³ = 1 L</code></td><td>dm³ ↔ L</td><td>samme størrelse</td></tr>
           <tr><td><code>1 cm³ = 1 mL</code></td><td>cm³ ↔ mL</td><td>samme størrelse</td></tr>
           <tr><td><code>1 m³ = 1000 L</code></td><td>m³ ↔ L</td><td>stor beholder</td></tr>
+          <tr><td><code>1 m³ = 1 kL</code></td><td>m³ ↔ kL</td><td>nyttig bro</td></tr>
         </tbody>
       </table>`;
   }
@@ -1040,8 +1044,8 @@
     if(mode===1) return {pool:L1_UNITS, type:"liter"};
     if(mode===2) return {pool:C2_UNITS, type:"cubic"};
     if(mode===3) return {pool:L3_UNITS, type:"liter"};
-    if(mode===4) return {pool:C4_UNITS, type:"cubic"};
-    return {pool:ALL_UNITS, type:"mixed"};
+    if(mode===4) return {pool:C4_UNITS, type:"cubicLarge"};
+    return {pool:MIXED_SAFE_UNITS, type:"mixedSafe"};
   }
 
   function orderIndex(unitName, type){
@@ -1062,155 +1066,178 @@
       return tier===0 ? [1,2,5,10] : tier===1 ? [1,2,5,10,20,25,50,100] : [1,2,5,10,20,25,50,100,200,250,500];
     }
     if(mode===4){
-      return tier===0 ? [1,2,5,10] : tier===1 ? [1,2,5,10,25,50,100] : [1,2,5,10,25,50,100,250,500,1000];
+      // Bevisst moderate tall
+      return tier===0 ? [1,2,5,10] : tier===1 ? [1,2,5,10,20,50,100] : [1,2,5,10,20,50,100,200,500];
     }
     return tier===0 ? [1,2,5,10,20,50,100] : tier===1 ? [1,2,5,10,25,50,100,250,500] : [1,2,5,10,25,50,100,250,500,1000];
   }
 
-  function choosePair(pool, type, tier, mode){
-    const maxSteps = tier===0 ? 1 : tier===1 ? 2 : 4;
-
-    if(mode===5 && tier===0){
-      const bridges = [
-        {a: U.dm3, b: U.L},
-        {a: U.cm3, b: U.mL},
-        {a: U.m3,  b: U.kL}
-      ];
-      const br = pick(bridges);
-      const from = Math.random()<0.5 ? br.a : br.b;
-      const to = from === br.a ? br.b : br.a;
-      return {from,to};
+  function choosePairSafeLiter(pool, tier){
+    const maxSteps = tier===0 ? 1 : tier===1 ? 2 : 3;
+    let from = pick(pool), to = pick(pool), tries = 0;
+    while((from.name===to.name || Math.abs(orderIndex(from.name, "liter") - orderIndex(to.name, "liter")) > maxSteps) && tries < 200){
+      from = pick(pool);
+      to = pick(pool);
+      tries++;
     }
+    return {from,to};
+  }
 
-    let from = pick(pool);
-    let to = pick(pool);
-    let tries = 0;
+  function choosePairSafeCubic(pool, tier){
+    const maxSteps = tier===0 ? 1 : tier===1 ? 2 : 2;
+    let from = pick(pool), to = pick(pool), tries = 0;
 
-    if(type==="mixed"){
-      while((from.name===to.name || (tier>=1 && from.family===to.family)) && tries<200){
-        from = pick(pool);
-        to = pick(pool);
-        tries++;
-      }
-      return {from,to};
-    }
+    while(tries < 300){
+      const diff = Math.abs(orderIndex(from.name, "cubic") - orderIndex(to.name, "cubic"));
+      const usesHuge = ["dam³","hm³","km³"].includes(from.name) || ["dam³","hm³","km³"].includes(to.name);
 
-    while((from.name===to.name || Math.abs(orderIndex(from.name, type)-orderIndex(to.name, type)) > maxSteps) && tries<200){
+      // Store kubikkenheter får bare nabo-hopp
+      const ok = from.name !== to.name &&
+        diff <= maxSteps &&
+        (!usesHuge || diff <= 1);
+
+      if(ok) return {from,to};
+
       from = pick(pool);
       to = pick(pool);
       tries++;
     }
 
-    return {from,to};
+    return {from:U.m3, to:U.dam3};
   }
 
-  function isNiceInteger(n){
-    return Math.abs(n - Math.round(n)) < 1e-9;
+  function choosePairMixedSafe(tier){
+    const easyBridges = [
+      {from:U.dm3, to:U.L},
+      {from:U.L, to:U.dm3},
+      {from:U.cm3, to:U.mL},
+      {from:U.mL, to:U.cm3},
+      {from:U.m3, to:U.L},
+      {from:U.L, to:U.m3},
+      {from:U.m3, to:U.kL},
+      {from:U.kL, to:U.m3},
+    ];
+
+    const mediumBridges = [
+      {from:U.dL, to:U.cm3},   // 1 dL = 100 cm³
+      {from:U.cm3, to:U.dL},
+      {from:U.cL, to:U.mL},    // 1 cL = 10 mL
+      {from:U.mL, to:U.cL},
+      {from:U.dL, to:U.mL},
+      {from:U.mL, to:U.dL},
+      {from:U.dm3, to:U.dL},
+      {from:U.dL, to:U.dm3},
+    ];
+
+    if(tier===0) return pick(easyBridges);
+    if(tier===1) return pick([...easyBridges, ...mediumBridges]);
+    return pick([...easyBridges, ...mediumBridges]);
   }
 
   function makeQuestion(){
     const tier = difficultyTier();
     const {pool, type} = poolForMode(mode);
-    const {from, to} = choosePair(pool, type, tier, mode);
     const values = valuePoolFor(mode, tier);
+
+    let from, to;
+
+    if(type==="liter"){
+      ({from,to} = choosePairSafeLiter(pool, tier));
+    } else if(type==="cubic"){
+      ({from,to} = choosePairSafeCubic(pool, tier));
+    } else if(type==="cubicLarge"){
+      ({from,to} = choosePairSafeCubic(pool, tier));
+    } else {
+      ({from,to} = choosePairMixedSafe(tier));
+    }
 
     let value = pick(values);
     let answer = convert(value, from, to);
 
     let tries = 0;
-    while(tier===0 && !isNiceInteger(answer) && tries<60){
+    while(tier===0 && !isNiceInteger(answer) && tries < 60){
       value = pick(values);
       answer = convert(value, from, to);
       tries++;
     }
 
-    if(type==="cubic" && tier===0){
+    if((type==="cubic" || type==="cubicLarge") && tier===0){
       let guard = 0;
-      while(!isNiceInteger(answer) && guard<6){
+      while(!isNiceInteger(answer) && guard < 6){
         value *= 1000;
         answer = convert(value, from, to);
         guard++;
       }
     }
 
-    const prompt = `${formatNumber(value)} ${from.name} = ? ${to.name}`;
     const correctValue = Math.round(answer * 1000000000) / 1000000000;
     const correctText = `${formatNumber(correctValue)} ${to.name}`;
-    const options = buildOptions(correctValue, to, tier, type);
+    const prompt = `${formatNumber(value)} ${from.name} = ? ${to.name}`;
+    const options = buildOptions(correctValue, to, type);
     const correctIdx = options.indexOf(correctText);
 
     return {prompt, correctText, options, correctIdx, toUnit: to};
   }
 
-  function buildOptions(correctValue, toUnit, tier, type){
+  function buildOptions(correctValue, toUnit, type){
     const numericOptions = new Set();
     numericOptions.add(String(correctValue));
 
     function addCandidate(v){
       const rounded = Math.round(v * 1000000000) / 1000000000;
-      numericOptions.add(String(rounded));
+      if(Number.isFinite(rounded) && rounded >= 0){
+        numericOptions.add(String(rounded));
+      }
     }
 
-    const stepFactors = type === "cubic"
+    const factors = (type === "cubic" || type === "cubicLarge")
       ? [1000, 0.001]
       : [10, 0.1, 100, 0.01, 1000, 0.001];
 
     let safety = 0;
     while(numericOptions.size < 3 && safety < 100){
-      const factor = pick(stepFactors);
-      const modePick = randInt(1,4);
+      const f = pick(factors);
+      const pickMode = randInt(1,4);
 
-      if(modePick === 1){
-        addCandidate(correctValue * factor);
-      } else if(modePick === 2){
-        addCandidate(correctValue / factor);
-      } else if(modePick === 3){
-        const deltaPool = tier===0 ? [1,2,5,10] : [1,2,5,10,20,50,100];
-        addCandidate(correctValue + pick(deltaPool));
+      if(pickMode === 1){
+        addCandidate(correctValue * f);
+      } else if(pickMode === 2){
+        addCandidate(correctValue / f);
+      } else if(pickMode === 3){
+        addCandidate(correctValue + pick([1,2,5,10,20,50,100]));
       } else {
-        const deltaPool = tier===0 ? [1,2,5] : [1,2,5,10,20];
-        addCandidate(Math.max(0, correctValue - pick(deltaPool)));
+        addCandidate(Math.max(0, correctValue - pick([1,2,5,10,20])));
       }
 
       safety++;
     }
 
-    const formatted = [...numericOptions]
+    let options = [...numericOptions]
       .map(s => Number(s))
-      .filter(v => Number.isFinite(v))
-      .filter(v => v >= 0)
+      .filter(v => Number.isFinite(v) && v >= 0)
       .map(v => `${formatNumber(v)} ${toUnit.name}`);
 
-    const uniqueFormatted = [...new Set(formatted)];
+    options = [...new Set(options)];
 
-    let options = uniqueFormatted.filter(t => t === `${formatNumber(correctValue)} ${toUnit.name}`);
+    const exact = `${formatNumber(correctValue)} ${toUnit.name}`;
+    if(!options.includes(exact)) options.unshift(exact);
 
-    for(const t of uniqueFormatted){
-      if(t !== `${formatNumber(correctValue)} ${toUnit.name}` && options.length < 3){
-        options.push(t);
-      }
-    }
+    options = [exact, ...options.filter(o => o !== exact)];
 
     while(options.length < 3){
-      const filler = correctValue + randInt(2,9) * (type==="cubic" ? 1000 : 10);
-      const txt = `${formatNumber(filler)} ${toUnit.name}`;
-      if(!options.includes(txt)) options.push(txt);
+      const filler = `${formatNumber(correctValue + randInt(2,9) * ((type === "cubic" || type === "cubicLarge") ? 1000 : 10))} ${toUnit.name}`;
+      if(!options.includes(filler)) options.push(filler);
     }
 
+    options = options.slice(0,3);
     options = shuffle(options);
 
-    if(options.filter(t => t === `${formatNumber(correctValue)} ${toUnit.name}`).length !== 1){
-      options = [
-        `${formatNumber(correctValue)} ${toUnit.name}`,
-        `${formatNumber(correctValue + (type==="cubic" ? 1000 : 10))} ${toUnit.name}`,
-        `${formatNumber(Math.max(0, correctValue - (type==="cubic" ? 1000 : 10)))} ${toUnit.name}`
-      ];
-      options = [...new Set(options)];
-      while(options.length < 3){
-        const extra = `${formatNumber(correctValue + randInt(2,6)*(type==="cubic" ? 1000 : 10))} ${toUnit.name}`;
-        if(!options.includes(extra)) options.push(extra);
-      }
-      options = shuffle(options);
+    if(options.filter(o => o === exact).length !== 1){
+      options = shuffle([
+        exact,
+        `${formatNumber(correctValue + ((type === "cubic" || type === "cubicLarge") ? 1000 : 10))} ${toUnit.name}`,
+        `${formatNumber(Math.max(0, correctValue - ((type === "cubic" || type === "cubicLarge") ? 1000 : 10)))} ${toUnit.name}`
+      ]);
     }
 
     return options;
@@ -1228,11 +1255,11 @@
       1: "Nivå 1: mL, cL, dL, L",
       2: "Nivå 2: mm³, cm³, dm³, m³",
       3: "Nivå 3: mL–kL",
-      4: "Nivå 4: mm³–km³",
-      5: "Nivå 5: Alt blandet"
+      4: "Nivå 4: snille kubikkhopp",
+      5: "Nivå 5: gode broer"
     }[mode];
 
-    $("promptSub").textContent = `${subText} · Velg riktig tall i enheten ${currentQ.toUnit.name}`;
+    $("promptSub").textContent = `${subText} · Velg riktig tall i ${currentQ.toUnit.name}`;
 
     for(let i=0;i<3;i++){
       $("ans"+i).textContent = currentQ.options[i];
