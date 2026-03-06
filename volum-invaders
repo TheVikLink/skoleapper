@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Volum Invaders</title>
+  <style>
+    :root{
+      --success:#39ff14;
+      --danger:#ff2e63;
+      --info:#08f7fe;
+      --warn:#ffe66d;
+      --text:#e6e6ff;
+      --muted:#9aa;
+      --panel:rgba(15, 15, 40, 0.85);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    body{
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:#0a0a1a;
+      min-height:100vh;
+      overflow:hidden;
+      color:var(--text);
+    }
+
+    .menu{
+      position:fixed; inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      background: radial-gradient(ellipse at 30% 40%, #0d0d2b 0%, #0a0a1a 60%, #080814 100%);
+    }
+
+    .menu-card{
+      width:min(980px, 100%);
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:18px;
+      box-shadow: 0 20px 80px rgba(0,0,0,0.45);
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .menu-top{
+      padding:18px 18px 14px 18px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      border-bottom:1px solid rgba(255,255,255,0.10);
+      background: linear-gradient(135deg, rgba(8,247,254,0.08), rgba(57,255,20,0.06));
+    }
+
+    .title{
+      font-weight:900;
+      letter-spacing:0.5px;
+      font-size:22px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .sub{
+      color:rgba(230,230,255,0.8);
+      font-size:13px;
+      margin-top:6px;
+      line-height:1.5;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.14);
+      font-size:12px;
+      color:rgba(230,230,255,0.85);
+      white-space:nowrap;
+    }
+
+    .menu-body{
+      padding:18px;
+      display:grid;
+      gap:14px;
+    }
+
+    .row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    select{
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.16);
+      background:rgba(0,0,0,0.25);
+      color:var(--text);
+      font-size:15px;
+      min-width: 300px;
+      outline:none;
+    }
+
+    button{
+      padding:12px 16px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.16);
+      background:rgba(255,255,255,0.08);
+      color:var(--text);
+      font-weight:800;
+      cursor:pointer;
+      transition: transform 0.15s, background 0.15s, border-color 0.15s;
+    }
+
+    button:hover{
+      transform: translateY(-2px);
+      border-color: rgba(8,247,254,0.45);
+      background:rgba(255,255,255,0.12);
+    }
+
+    button.primary{
+      background: rgba(8,247,254,0.14);
+      border-color: rgba(8,247,254,0.35);
+    }
+
+    button.primary:hover{
+      border-color: rgba(8,247,254,0.70);
+      background: rgba(8,247,254,0.18);
+    }
+
+    .hint{
+      font-size:13px;
+      color: rgba(230,230,255,0.75);
+      line-height:1.55;
+    }
+
+    .hint code, .overlay-note code{
+      background: rgba(8,247,254,0.10);
+      border:1px solid rgba(8,247,254,0.20);
+      padding:2px 8px;
+      border-radius:999px;
+      font-weight:800;
+    }
+
+    .overlay{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      background: rgba(0,0,0,0.65);
+      z-index: 2000;
+    }
+
+    .overlay-card{
+      width:min(980px, 100%);
+      background: rgba(255,255,255,0.95);
+      color:#0b1020;
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow: 0 24px 90px rgba(0,0,0,0.55);
+    }
+
+    .overlay-top{
+      padding:14px 16px;
+      background: linear-gradient(135deg, #0ea5e9, #22c55e);
+      color:white;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .overlay-title{
+      font-weight:900;
+      letter-spacing:0.3px;
+    }
+
+    .overlay-body{
+      padding:14px 16px 16px 16px;
+      display:grid;
+      gap:12px;
+    }
+
+    .table{
+      width:100%;
+      border-collapse:collapse;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid rgba(0,0,0,0.08);
+    }
+
+    .table th, .table td{
+      padding:10px 10px;
+      border-bottom:1px solid rgba(0,0,0,0.06);
+      text-align:left;
+      font-size:14px;
+    }
+
+    .table th{
+      background: rgba(0,0,0,0.03);
+      font-weight:900;
+    }
+
+    .overlay-note{
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    .overlay-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .overlay-actions button{
+      background:#0b1020;
+      color:white;
+      border:none;
+    }
+
+    .overlay-actions button:hover{
+      transform:none;
+      filter:brightness(1.1);
+    }
+
+    .game{
+      position:fixed; inset:0;
+      display:none;
+      background:#0a0a1a;
+      overflow:hidden;
+    }
+
+    .stars{
+      position:absolute; inset:0;
+      background: radial-gradient(ellipse at 20% 50%, #0d0d2b 0%, #0a0a1a 100%);
+    }
+
+    .stars::before, .stars::after{
+      content:'';
+      position:absolute; inset:0;
+      background-image:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,.6) 50%, transparent 50%),
+        radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,.4) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 50% 10%, rgba(255,255,255,.7) 50%, transparent 50%),
+        radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,.3) 50%, transparent 50%),
+        radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,.5) 50%, transparent 50%);
+      background-size: 220px 220px;
+      animation: twinkle 4s ease-in-out infinite alternate;
+    }
+
+    .stars::after{
+      background-size: 320px 320px;
+      animation-delay:2s;
+      opacity:0.55;
+    }
+
+    @keyframes twinkle{
+      from{opacity:0.4}
+      to{opacity:1}
+    }
+
+    .hud{
+      position:absolute;
+      top:0; left:0; right:0;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:28px;
+      padding:14px 16px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.75) 0%, transparent 100%);
+      z-index:100;
+      flex-wrap:wrap;
+    }
+
+    .hud-item{
+      text-align:center;
+      min-width:88px;
+    }
+
+    .hud-label{
+      color:#889;
+      font-size:10px;
+      text-transform:uppercase;
+      letter-spacing:2px;
+    }
+
+    .hud-value{
+      font-size:20px;
+      font-weight:900;
+      color:var(--success);
+      text-shadow: 0 0 12px rgba(57,255,20,0.55);
+    }
+
+    .hud-value.lives{
+      color:var(--danger);
+      text-shadow: 0 0 12px rgba(255,46,99,0.55);
+    }
+
+    .hud-value.level{
+      color:var(--info);
+      text-shadow: 0 0 12px rgba(8,247,254,0.55);
+    }
+
+    .hud-value.mult{
+      color:var(--warn);
+      text-shadow: 0 0 12px rgba(255,230,109,0.45);
+    }
+
+    .quit{
+      position:absolute;
+      right:16px;
+      top:16px;
+      background: rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.18);
+      color:#99a;
+      padding:8px 12px;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:12px;
+      font-weight:800;
+      transition: all 0.15s;
+      z-index:120;
+    }
+
+    .quit:hover{
+      border-color: rgba(255,46,99,0.6);
+      color: var(--danger);
+      background: rgba(255,46,99,0.12);
+    }
+
+    .invader-zone{
+      position:absolute;
+      left:50%;
+      transform: translateX(-50%);
+      top:-170px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      z-index:20;
+    }
+
+    .invader-sprite{
+      font-size:50px;
+      filter: drop-shadow(0 0 20px var(--success));
+      animation: wobble 0.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes wobble{
+      0%{ transform: rotate(-3deg) scale(1); }
+      100%{ transform: rotate(3deg) scale(1.05); }
+    }
+
+    .prompt-box{
+      margin-top:12px;
+      background: var(--panel);
+      border:1px solid rgba(57,255,20,0.30);
+      border-radius:14px;
+      padding:16px 22px;
+      text-align:center;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 30px rgba(57,255,20,0.10);
+      min-width: min(760px, 92vw);
+    }
+
+    .prompt-main{
+      font-size:20px;
+      font-weight:900;
+      color: var(--warn);
+      text-shadow: 0 0 10px rgba(255,230,109,0.35);
+      margin-bottom:6px;
+    }
+
+    .prompt-sub{
+      font-size:12px;
+      color:#9aa;
+      line-height:1.4;
+    }
+
+    .danger-line{
+      position:absolute;
+      bottom:148px;
+      left:10%;
+      right:10%;
+      height:2px;
+      background: linear-gradient(90deg, transparent, var(--danger), transparent);
+      box-shadow: 0 0 12px rgba(255,46,99,0.4);
+      z-index:15;
+      opacity:0.55;
+    }
+
+    .danger-label{
+      position:absolute;
+      bottom:154px;
+      left:50%;
+      transform: translateX(-50%);
+      font-size:9px;
+      color:var(--danger);
+      opacity:0.45;
+      letter-spacing:4px;
+      z-index:15;
+    }
+
+    .ship{
+      position:absolute;
+      bottom:118px;
+      left:calc(50% - 18px);
+      font-size:36px;
+      filter: drop-shadow(0 0 15px var(--info));
+      transition: left 0.25s ease;
+      z-index:20;
+    }
+
+    .answer-zone{
+      position:absolute;
+      bottom:50px;
+      left:0; right:0;
+      display:flex;
+      gap:16px;
+      justify-content:center;
+      padding: 0 16px;
+      z-index:20;
+      flex-wrap:wrap;
+    }
+
+    .answer-card{
+      background: var(--panel);
+      border:2px solid rgba(8,247,254,0.30);
+      border-radius:14px;
+      padding:18px 18px;
+      min-width: min(240px, 28vw);
+      text-align:center;
+      cursor:pointer;
+      user-select:none;
+      transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .answer-card:hover{
+      border-color: var(--info);
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 10px 35px rgba(8,247,254,0.18);
+    }
+
+    .key-hint{
+      font-size:10px;
+      color:#667;
+      letter-spacing:2px;
+      margin-bottom:8px;
+      font-weight:900;
+    }
+
+    .answer-text{
+      font-size:18px;
+      font-weight:900;
+      color:white;
+      line-height:1.2;
+      word-break:break-word;
+    }
+
+    .answer-card.correct{
+      border-color: var(--success) !important;
+      background: rgba(57,255,20,0.14) !important;
+      animation: pulse 0.5s ease;
+    }
+
+    .answer-card.wrong{
+      border-color: var(--danger) !important;
+      background: rgba(255,46,99,0.14) !important;
+      animation: shake 0.35s ease;
+    }
+
+    @keyframes pulse{
+      0%{ box-shadow: 0 0 0 0 rgba(57,255,20,.55); }
+      100%{ box-shadow: 0 0 45px 12px rgba(57,255,20,0); }
+    }
+
+    @keyframes shake{
+      0%,100%{ transform: translateX(0); }
+      20%{ transform: translateX(-8px); }
+      40%{ transform: translateX(8px); }
+      60%{ transform: translateX(-4px); }
+      80%{ transform: translateX(4px); }
+    }
+
+    .combo{
+      position:absolute;
+      top:50%;
+      right:26px;
+      transform: translateY(-50%);
+      font-size:12px;
+      color: var(--warn);
+      text-shadow: 0 0 15px rgba(255,230,109,0.45);
+      z-index:100;
+      text-align:right;
+      opacity:0;
+      transition: opacity 0.25s;
+    }
+
+    .combo.visible{ opacity:1; }
+
+    .combo-num{
+      display:block;
+      font-size:34px;
+      font-weight:950;
+      margin-bottom:4px;
+    }
+
+    .warning-glow{
+      position:absolute;
+      bottom:0; left:0; right:0;
+      height:220px;
+      background: linear-gradient(0deg, rgba(255,46,99,0.16), transparent);
+      z-index:5;
+      opacity:0;
+      transition: opacity 0.25s;
+      pointer-events:none;
+    }
+
+    .explosion{
+      position:fixed;
+      pointer-events:none;
+      z-index:200;
+    }
+
+    .particle{
+      position:absolute;
+      width:4px;
+      height:4px;
+      border-radius:50%;
+      animation: explode 0.6s ease-out forwards;
+    }
+
+    @keyframes explode{
+      0%{ opacity:1; transform: translate(0,0) scale(1); }
+      100%{ opacity:0; transform: translate(var(--dx), var(--dy)) scale(0); }
+    }
+
+    .level-flash{
+      position:fixed;
+      inset:0;
+      background: radial-gradient(circle, rgba(8,247,254,0.22), transparent 70%);
+      z-index:180;
+      animation: flash 0.8s ease-out forwards;
+      pointer-events:none;
+    }
+
+    @keyframes flash{
+      0%{opacity:1}
+      100%{opacity:0}
+    }
+
+    .level-text{
+      position:fixed;
+      top:45%;
+      left:50%;
+      transform: translate(-50%, -50%);
+      font-size:30px;
+      font-weight:950;
+      color: var(--info);
+      text-shadow: 0 0 30px rgba(8,247,254,0.8);
+      z-index:190;
+      animation: levelText 1.2s ease-out forwards;
+      pointer-events:none;
+    }
+
+    @keyframes levelText{
+      0%{ opacity:0; transform: translate(-50%,-50%) scale(0.6); }
+      30%{ opacity:1; transform: translate(-50%,-50%) scale(1.18); }
+      70%{ opacity:1; }
+      100%{ opacity:0; transform: translate(-50%,-58%) scale(1); }
+    }
+
+    @media (max-width:700px){
+      .hud{ gap:18px; padding:12px 12px; }
+      .hud-item{ min-width: 70px; }
+      .prompt-main{ font-size:16px; }
+      .answer-card{ min-width: min(160px, 40vw); padding:14px 12px; }
+      .answer-text{ font-size:14px; }
+      .invader-sprite{ font-size:44px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="menu" id="menu">
+  <div class="menu-card">
+    <div class="menu-top">
+      <div>
+        <div class="title">👾 Volum Invaders</div>
+        <div class="sub">
+          Space Invaders for volumenheter. Nå med låst målenhet i spørsmålet, så det aldri kan finnes flere korrekte svar samtidig.
+        </div>
+      </div>
+      <div class="pill">Taster: <b>1</b> <b>2</b> <b>3</b> · Offline</div>
+    </div>
+
+    <div class="menu-body">
+      <div class="row">
+        <div style="flex:1; min-width: 300px;">
+          <label for="levelSel" style="display:block;font-weight:900;margin-bottom:8px;color:rgba(230,230,255,0.9)">Velg nivå</label>
+          <select id="levelSel">
+            <option value="1">Nivå 1: mL, cL, dL, L</option>
+            <option value="2">Nivå 2: mm³, cm³, dm³, m³</option>
+            <option value="3">Nivå 3: mL–kL (inkl. daL, hL, kL)</option>
+            <option value="4">Nivå 4: mm³–km³ (inkl. dam³, hm³, km³)</option>
+            <option value="5">Nivå 5: Alt blandet</option>
+          </select>
+        </div>
+
+        <div class="row" style="margin-left:auto;">
+          <button class="primary" id="btnStart">Start</button>
+        </div>
+      </div>
+
+      <div class="hint">
+        <div>• Spørsmålene er nå på formen <code>10 dL = ? mL</code>, ikke bare <code>10 dL = ?</code>.</div>
+        <div>• Dermed finnes det bare <b>ett</b> riktig alternativ.</div>
+        <div>• Spillet starter lett og øker gradvis i fart og vanskelighetsgrad.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="intro">
+  <div class="overlay-card">
+    <div class="overlay-top">
+      <div class="overlay-title" id="introTitle">Dette må du kunne</div>
+      <div class="overlay-actions">
+        <button id="btnIntroOk">Jeg har skjønt det</button>
+        <button id="btnIntroBack" style="background:#1f2937;">Tilbake</button>
+      </div>
+    </div>
+    <div class="overlay-body">
+      <div id="introContent"></div>
+      <div class="overlay-note">
+        Tips: Se alltid på <code>målenheten etter spørsmålstegnet</code>. Den bestemmer hvilket svar som faktisk er riktig.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="game" id="game">
+  <div class="stars"></div>
+  <div class="warning-glow" id="warnGlow"></div>
+
+  <div class="hud">
+    <div class="hud-item">
+      <div class="hud-label">Poeng</div>
+      <div class="hud-value" id="hudScore">0</div>
+    </div>
+    <div class="hud-item">
+      <div class="hud-label">Spillnivå</div>
+      <div class="hud-value level" id="hudLevel">1</div>
+    </div>
+    <div class="hud-item">
+      <div class="hud-label">Liv</div>
+      <div class="hud-value lives" id="hudLives">❤️❤️❤️</div>
+    </div>
+    <div class="hud-item">
+      <div class="hud-label">Combo</div>
+      <div class="hud-value" id="hudCombo">0</div>
+    </div>
+    <div class="hud-item">
+      <div class="hud-label">Mult</div>
+      <div class="hud-value mult" id="hudMult">1.0x</div>
+    </div>
+  </div>
+
+  <div class="quit" id="btnQuit">✕ Avslutt</div>
+
+  <div class="invader-zone" id="invaderZone">
+    <div class="invader-sprite">👾</div>
+    <div class="prompt-box">
+      <div class="prompt-main" id="promptMain">—</div>
+      <div class="prompt-sub" id="promptSub">Velg svar med 1–3</div>
+    </div>
+  </div>
+
+  <div class="danger-line"></div>
+  <div class="danger-label">▼ FARESONE ▼</div>
+
+  <div class="ship" id="ship">🚀</div>
+
+  <div class="answer-zone">
+    <div class="answer-card" id="card0">
+      <div class="key-hint">[ 1 ]</div>
+      <div class="answer-text" id="ans0">—</div>
+    </div>
+    <div class="answer-card" id="card1">
+      <div class="key-hint">[ 2 ]</div>
+      <div class="answer-text" id="ans1">—</div>
+    </div>
+    <div class="answer-card" id="card2">
+      <div class="key-hint">[ 3 ]</div>
+      <div class="answer-text" id="ans2">—</div>
+    </div>
+  </div>
+
+  <div class="combo" id="comboBox">
+    <span class="combo-num" id="comboNum">0x</span>
+    COMBO
+  </div>
+</div>
+
+<script>
+  const $ = (id)=>document.getElementById(id);
+
+  function randInt(min,max){
+    return Math.floor(Math.random()*(max-min+1))+min;
+  }
+
+  function pick(arr){
+    return arr[randInt(0,arr.length-1)];
+  }
+
+  function shuffle(arr){
+    const a = [...arr];
+    for(let i=a.length-1;i>0;i--){
+      const j = randInt(0,i);
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  function formatNumber(n){
+    if(!Number.isFinite(n)) return String(n);
+    const rounded = Math.round(n * 1000000000) / 1000000000;
+    if(Number.isInteger(rounded)) return String(rounded);
+    return String(rounded)
+      .replace(/\.0+$/,'')
+      .replace(/(\.\d*?)0+$/,'$1');
+  }
+
+  const U = {
+    mL:   {name:"mL",   factor:0.001, family:"L"},
+    cL:   {name:"cL",   factor:0.01,  family:"L"},
+    dL:   {name:"dL",   factor:0.1,   family:"L"},
+    L:    {name:"L",    factor:1,     family:"L"},
+    daL:  {name:"daL",  factor:10,    family:"L"},
+    hL:   {name:"hL",   factor:100,   family:"L"},
+    kL:   {name:"kL",   factor:1000,  family:"L"},
+
+    mm3:  {name:"mm³",  factor:0.000001,      family:"C"},
+    cm3:  {name:"cm³",  factor:0.001,         family:"C"},
+    dm3:  {name:"dm³",  factor:1,             family:"C"},
+    m3:   {name:"m³",   factor:1000,          family:"C"},
+    dam3: {name:"dam³", factor:1000000,       family:"C"},
+    hm3:  {name:"hm³",  factor:1000000000,    family:"C"},
+    km3:  {name:"km³",  factor:1000000000000, family:"C"},
+  };
+
+  const L1_UNITS = [U.mL, U.cL, U.dL, U.L];
+  const L3_UNITS = [U.mL, U.cL, U.dL, U.L, U.daL, U.hL, U.kL];
+
+  const C2_UNITS = [U.mm3, U.cm3, U.dm3, U.m3];
+  const C4_UNITS = [U.mm3, U.cm3, U.dm3, U.m3, U.dam3, U.hm3, U.km3];
+
+  const ALL_UNITS = [...L3_UNITS, ...C4_UNITS];
+
+  function convert(value, fromU, toU){
+    const liters = value * fromU.factor;
+    return liters / toU.factor;
+  }
+
+  function introHTML(mode){
+    if(mode===1){
+      return `
+        <table class="table">
+          <thead><tr><th>Nivå 1</th><th>Regel</th><th>Eksempel</th></tr></thead>
+          <tbody>
+            <tr><td><b>mL ↔ cL ↔ dL ↔ L</b></td><td>Hvert trinn: <b>×10</b> nedover, <b>÷10</b> oppover</td><td>5 dL = 50 cL</td></tr>
+            <tr><td>10 dL = 1 L</td><td>÷10 opp</td><td>5 dL = 0.5 L</td></tr>
+            <tr><td>100 cL = 1 L</td><td>÷100 opp</td><td>50 cL = 0.5 L</td></tr>
+            <tr><td>1000 mL = 1 L</td><td>÷1000 opp</td><td>2000 mL = 2 L</td></tr>
+          </tbody>
+        </table>`;
+    }
+    if(mode===2){
+      return `
+        <table class="table">
+          <thead><tr><th>Nivå 2</th><th>Regel</th><th>Kraftregel</th></tr></thead>
+          <tbody>
+            <tr><td><b>mm³ ↔ cm³ ↔ dm³ ↔ m³</b></td><td>Hvert trinn: <b>×1000</b> nedover, <b>÷1000</b> oppover</td><td>Kubikk gir 1000 per steg</td></tr>
+            <tr><td colspan="3"><code>1 m³ = 1000 dm³ = 1 000 000 cm³ = 1 000 000 000 mm³</code></td></tr>
+          </tbody>
+        </table>`;
+    }
+    if(mode===3){
+      return `
+        <table class="table">
+          <thead><tr><th>Nivå 3</th><th>Liter-stigen</th><th>Regel</th></tr></thead>
+          <tbody>
+            <tr><td><b>mL → cL → dL → L → daL → hL → kL</b></td><td>milli, centi, desi, (L), deka, hekto, kilo</td><td>Hvert trinn: <b>×10</b></td></tr>
+            <tr><td><code>1 daL = 10 L</code></td><td>deka</td><td>×10</td></tr>
+            <tr><td><code>1 hL = 100 L</code></td><td>hekto</td><td>×100</td></tr>
+            <tr><td><code>1 kL = 1000 L</code></td><td>kilo</td><td>×1000</td></tr>
+          </tbody>
+        </table>`;
+    }
+    if(mode===4){
+      return `
+        <table class="table">
+          <thead><tr><th>Nivå 4</th><th>Kubikk-stigen</th><th>Regel</th></tr></thead>
+          <tbody>
+            <tr><td><b>mm³ → cm³ → dm³ → m³ → dam³ → hm³ → km³</b></td><td>Hvert trinn: <b>×1000</b></td><td>Volum vokser voldsomt</td></tr>
+            <tr><td><code>1 dam³ = 1000 m³</code></td><td>×1000</td><td>= 1 000 000 L</td></tr>
+            <tr><td><code>1 hm³ = 1000 dam³</code></td><td>×1000</td><td>= 1 000 000 000 L</td></tr>
+            <tr><td><code>1 km³ = 1000 hm³</code></td><td>×1000</td><td>= 1 000 000 000 000 L</td></tr>
+          </tbody>
+        </table>`;
+    }
+    return `
+      <table class="table">
+        <thead><tr><th>Nivå 5</th><th>Broer</th><th>Huske-setning</th></tr></thead>
+        <tbody>
+          <tr><td><code>1 dm³ = 1 L</code></td><td>dm³ ↔ L</td><td>samme størrelse</td></tr>
+          <tr><td><code>1 cm³ = 1 mL</code></td><td>cm³ ↔ mL</td><td>samme størrelse</td></tr>
+          <tr><td><code>1 m³ = 1000 L</code></td><td>m³ ↔ L</td><td>stor beholder</td></tr>
+        </tbody>
+      </table>`;
+  }
+
+  let mode = 1;
+  let gameActive = false;
+  let answering = false;
+
+  let score = 0;
+  let lives = 3;
+  let viLevel = 1;
+  let combo = 0;
+  let maxCombo = 0;
+  let mult = 1.0;
+  let totalCorrect = 0;
+
+  let fallAnimId = null;
+  let fallStart = 0;
+  let fallDuration = 8000;
+  let startY = -170;
+  let endY = 0;
+
+  let currentQ = null;
+  let correctIndex = -1;
+
+  function updateHUD(){
+    $("hudScore").textContent = score;
+    $("hudLevel").textContent = viLevel;
+    $("hudCombo").textContent = combo;
+    $("hudMult").textContent = mult.toFixed(1) + "x";
+    $("hudLives").textContent = "❤️".repeat(Math.max(0,lives)) + "🖤".repeat(Math.max(0,3-lives));
+
+    if(combo >= 2){
+      $("comboBox").classList.add("visible");
+      $("comboNum").textContent = combo + "x";
+    } else {
+      $("comboBox").classList.remove("visible");
+    }
+  }
+
+  function showLevelUp(){
+    const flash = document.createElement("div");
+    flash.className = "level-flash";
+    document.body.appendChild(flash);
+    setTimeout(()=>flash.remove(), 900);
+
+    const text = document.createElement("div");
+    text.className = "level-text";
+    text.textContent = `NIVÅ ${viLevel}!`;
+    document.body.appendChild(text);
+    setTimeout(()=>text.remove(), 1300);
+  }
+
+  function createExplosion(x,y,color){
+    const container = document.createElement("div");
+    container.className = "explosion";
+    container.style.left = x + "px";
+    container.style.top = y + "px";
+
+    for(let i=0;i<12;i++){
+      const p = document.createElement("div");
+      p.className = "particle";
+      const angle = (Math.PI*2*i)/12;
+      const dist = 30 + Math.random()*40;
+      p.style.setProperty("--dx", (Math.cos(angle)*dist) + "px");
+      p.style.setProperty("--dy", (Math.sin(angle)*dist) + "px");
+      p.style.background = color;
+      p.style.boxShadow = `0 0 6px ${color}`;
+      container.appendChild(p);
+    }
+
+    document.body.appendChild(container);
+    setTimeout(()=>container.remove(), 700);
+  }
+
+  function getEndY(){
+    return window.innerHeight - 148 - 130;
+  }
+
+  function getFallDuration(level){
+    return Math.max(2500, 8200 - (level-1)*520);
+  }
+
+  function stopFalling(){
+    if(fallAnimId){
+      cancelAnimationFrame(fallAnimId);
+      fallAnimId = null;
+    }
+  }
+
+  function startFalling(){
+    fallDuration = getFallDuration(viLevel);
+    endY = getEndY();
+    startY = -170;
+
+    const zone = $("invaderZone");
+    zone.style.transition = "none";
+    zone.style.opacity = "1";
+    zone.style.top = startY + "px";
+
+    $("warnGlow").style.opacity = "0";
+
+    fallStart = performance.now();
+    stopFalling();
+    fallAnimId = requestAnimationFrame(fallStep);
+  }
+
+  function fallStep(ts){
+    if(!gameActive || answering) return;
+
+    const elapsed = ts - fallStart;
+    const p = Math.min(1, elapsed / fallDuration);
+    const eased = p*p;
+    const y = startY + (endY - startY)*eased;
+
+    $("invaderZone").style.top = y + "px";
+
+    if(p > 0.5){
+      const glow = (p-0.5)*2;
+      $("warnGlow").style.opacity = (glow*0.6).toFixed(3);
+
+      if(p > 0.82){
+        const pulse = Math.sin(elapsed*0.01)*0.5 + 0.5;
+        const box = $("invaderZone").querySelector(".prompt-box");
+        box.style.borderColor = `rgba(255, 46, 99, ${0.25 + pulse*0.75})`;
+        box.style.boxShadow = `0 0 ${18 + pulse*22}px rgba(255,46,99,${0.18 + pulse*0.30})`;
+      }
+    }
+
+    if(p >= 1){
+      handleTimeout();
+      return;
+    }
+
+    fallAnimId = requestAnimationFrame(fallStep);
+  }
+
+  function handleTimeout(){
+    if(!gameActive || answering) return;
+    answering = true;
+    stopFalling();
+
+    combo = 0;
+    mult = 1.0;
+    lives--;
+
+    updateHUD();
+
+    if(correctIndex >= 0) $("card"+correctIndex).classList.add("correct");
+
+    if(lives <= 0){
+      setTimeout(gameOver, 900);
+    } else {
+      setTimeout(nextRound, 1100);
+    }
+  }
+
+  function gameOver(){
+    gameActive = false;
+    stopFalling();
+    $("warnGlow").style.opacity = "0";
+
+    $("game").style.display = "none";
+    $("menu").style.display = "flex";
+
+    alert(`Game over!\n\nPoeng: ${score}\nMaks combo: ${maxCombo}x\nSpillnivå: ${viLevel}`);
+    resetGameState();
+  }
+
+  function resetGameState(){
+    score = 0;
+    lives = 3;
+    viLevel = 1;
+    combo = 0;
+    maxCombo = 0;
+    mult = 1.0;
+    totalCorrect = 0;
+    answering = false;
+    currentQ = null;
+    correctIndex = -1;
+
+    for(let i=0;i<3;i++){
+      $("card"+i).className = "answer-card";
+      $("ans"+i).textContent = "—";
+    }
+
+    $("promptMain").textContent = "—";
+    $("promptSub").textContent = "Velg svar med 1–3";
+    $("invaderZone").style.top = "-170px";
+    updateHUD();
+  }
+
+  function difficultyTier(){
+    if(combo >= 10 || viLevel >= 5) return 2;
+    if(combo >= 5 || viLevel >= 3) return 1;
+    return 0;
+  }
+
+  function updateProgressionOnCorrect(){
+    combo++;
+    totalCorrect++;
+    if(combo > maxCombo) maxCombo = combo;
+
+    mult = 1.0 + Math.floor(combo / 5) * 0.5;
+
+    if(totalCorrect % 5 === 0){
+      viLevel++;
+      showLevelUp();
+    }
+  }
+
+  function poolForMode(mode){
+    if(mode===1) return {pool:L1_UNITS, type:"liter"};
+    if(mode===2) return {pool:C2_UNITS, type:"cubic"};
+    if(mode===3) return {pool:L3_UNITS, type:"liter"};
+    if(mode===4) return {pool:C4_UNITS, type:"cubic"};
+    return {pool:ALL_UNITS, type:"mixed"};
+  }
+
+  function orderIndex(unitName, type){
+    if(type==="liter"){
+      return ["mL","cL","dL","L","daL","hL","kL"].indexOf(unitName);
+    }
+    return ["mm³","cm³","dm³","m³","dam³","hm³","km³"].indexOf(unitName);
+  }
+
+  function valuePoolFor(mode, tier){
+    if(mode===1){
+      return tier===0 ? [1,2,5,10] : tier===1 ? [1,2,5,10,20,50,100] : [1,2,5,10,20,50,100,200,500];
+    }
+    if(mode===2){
+      return tier===0 ? [1,2,5,10,20,50,100] : tier===1 ? [1,2,5,10,25,50,100,200,500,1000] : [1,2,5,10,25,50,100,250,500,1000,2000,5000];
+    }
+    if(mode===3){
+      return tier===0 ? [1,2,5,10] : tier===1 ? [1,2,5,10,20,25,50,100] : [1,2,5,10,20,25,50,100,200,250,500];
+    }
+    if(mode===4){
+      return tier===0 ? [1,2,5,10] : tier===1 ? [1,2,5,10,25,50,100] : [1,2,5,10,25,50,100,250,500,1000];
+    }
+    return tier===0 ? [1,2,5,10,20,50,100] : tier===1 ? [1,2,5,10,25,50,100,250,500] : [1,2,5,10,25,50,100,250,500,1000];
+  }
+
+  function choosePair(pool, type, tier, mode){
+    const maxSteps = tier===0 ? 1 : tier===1 ? 2 : 4;
+
+    if(mode===5 && tier===0){
+      const bridges = [
+        {a: U.dm3, b: U.L},
+        {a: U.cm3, b: U.mL},
+        {a: U.m3,  b: U.kL}
+      ];
+      const br = pick(bridges);
+      const from = Math.random()<0.5 ? br.a : br.b;
+      const to = from === br.a ? br.b : br.a;
+      return {from,to};
+    }
+
+    let from = pick(pool);
+    let to = pick(pool);
+    let tries = 0;
+
+    if(type==="mixed"){
+      while((from.name===to.name || (tier>=1 && from.family===to.family)) && tries<200){
+        from = pick(pool);
+        to = pick(pool);
+        tries++;
+      }
+      return {from,to};
+    }
+
+    while((from.name===to.name || Math.abs(orderIndex(from.name, type)-orderIndex(to.name, type)) > maxSteps) && tries<200){
+      from = pick(pool);
+      to = pick(pool);
+      tries++;
+    }
+
+    return {from,to};
+  }
+
+  function isNiceInteger(n){
+    return Math.abs(n - Math.round(n)) < 1e-9;
+  }
+
+  function makeQuestion(){
+    const tier = difficultyTier();
+    const {pool, type} = poolForMode(mode);
+    const {from, to} = choosePair(pool, type, tier, mode);
+    const values = valuePoolFor(mode, tier);
+
+    let value = pick(values);
+    let answer = convert(value, from, to);
+
+    let tries = 0;
+    while(tier===0 && !isNiceInteger(answer) && tries<60){
+      value = pick(values);
+      answer = convert(value, from, to);
+      tries++;
+    }
+
+    if(type==="cubic" && tier===0){
+      let guard = 0;
+      while(!isNiceInteger(answer) && guard<6){
+        value *= 1000;
+        answer = convert(value, from, to);
+        guard++;
+      }
+    }
+
+    const prompt = `${formatNumber(value)} ${from.name} = ? ${to.name}`;
+    const correctValue = Math.round(answer * 1000000000) / 1000000000;
+    const correctText = `${formatNumber(correctValue)} ${to.name}`;
+    const options = buildOptions(correctValue, to, tier, type);
+    const correctIdx = options.indexOf(correctText);
+
+    return {prompt, correctText, options, correctIdx, toUnit: to};
+  }
+
+  function buildOptions(correctValue, toUnit, tier, type){
+    const numericOptions = new Set();
+    numericOptions.add(String(correctValue));
+
+    function addCandidate(v){
+      const rounded = Math.round(v * 1000000000) / 1000000000;
+      numericOptions.add(String(rounded));
+    }
+
+    const stepFactors = type === "cubic"
+      ? [1000, 0.001]
+      : [10, 0.1, 100, 0.01, 1000, 0.001];
+
+    let safety = 0;
+    while(numericOptions.size < 3 && safety < 100){
+      const factor = pick(stepFactors);
+      const modePick = randInt(1,4);
+
+      if(modePick === 1){
+        addCandidate(correctValue * factor);
+      } else if(modePick === 2){
+        addCandidate(correctValue / factor);
+      } else if(modePick === 3){
+        const deltaPool = tier===0 ? [1,2,5,10] : [1,2,5,10,20,50,100];
+        addCandidate(correctValue + pick(deltaPool));
+      } else {
+        const deltaPool = tier===0 ? [1,2,5] : [1,2,5,10,20];
+        addCandidate(Math.max(0, correctValue - pick(deltaPool)));
+      }
+
+      safety++;
+    }
+
+    const formatted = [...numericOptions]
+      .map(s => Number(s))
+      .filter(v => Number.isFinite(v))
+      .filter(v => v >= 0)
+      .map(v => `${formatNumber(v)} ${toUnit.name}`);
+
+    const uniqueFormatted = [...new Set(formatted)];
+
+    let options = uniqueFormatted.filter(t => t === `${formatNumber(correctValue)} ${toUnit.name}`);
+
+    for(const t of uniqueFormatted){
+      if(t !== `${formatNumber(correctValue)} ${toUnit.name}` && options.length < 3){
+        options.push(t);
+      }
+    }
+
+    while(options.length < 3){
+      const filler = correctValue + randInt(2,9) * (type==="cubic" ? 1000 : 10);
+      const txt = `${formatNumber(filler)} ${toUnit.name}`;
+      if(!options.includes(txt)) options.push(txt);
+    }
+
+    options = shuffle(options);
+
+    if(options.filter(t => t === `${formatNumber(correctValue)} ${toUnit.name}`).length !== 1){
+      options = [
+        `${formatNumber(correctValue)} ${toUnit.name}`,
+        `${formatNumber(correctValue + (type==="cubic" ? 1000 : 10))} ${toUnit.name}`,
+        `${formatNumber(Math.max(0, correctValue - (type==="cubic" ? 1000 : 10)))} ${toUnit.name}`
+      ];
+      options = [...new Set(options)];
+      while(options.length < 3){
+        const extra = `${formatNumber(correctValue + randInt(2,6)*(type==="cubic" ? 1000 : 10))} ${toUnit.name}`;
+        if(!options.includes(extra)) options.push(extra);
+      }
+      options = shuffle(options);
+    }
+
+    return options;
+  }
+
+  function pickQuestionAndRender(){
+    for(let i=0;i<3;i++) $("card"+i).className = "answer-card";
+
+    currentQ = makeQuestion();
+    correctIndex = currentQ.correctIdx;
+
+    $("promptMain").textContent = currentQ.prompt;
+
+    const subText = {
+      1: "Nivå 1: mL, cL, dL, L",
+      2: "Nivå 2: mm³, cm³, dm³, m³",
+      3: "Nivå 3: mL–kL",
+      4: "Nivå 4: mm³–km³",
+      5: "Nivå 5: Alt blandet"
+    }[mode];
+
+    $("promptSub").textContent = `${subText} · Velg riktig tall i enheten ${currentQ.toUnit.name}`;
+
+    for(let i=0;i<3;i++){
+      $("ans"+i).textContent = currentQ.options[i];
+    }
+  }
+
+  function selectAnswer(idx){
+    if(!gameActive || answering) return;
+    answering = true;
+    stopFalling();
+
+    const card = $("card"+idx);
+    const rect = card.getBoundingClientRect();
+    $("ship").style.left = (rect.left + rect.width/2 - 18) + "px";
+
+    $("warnGlow").style.opacity = "0";
+
+    if(idx === correctIndex){
+      card.classList.add("correct");
+      updateProgressionOnCorrect();
+
+      const points = Math.round((100 * viLevel + (combo>1 ? combo*20 : 0)) * mult);
+      score += points;
+
+      const invRect = $("invaderZone").getBoundingClientRect();
+      createExplosion(
+        invRect.left + invRect.width/2,
+        invRect.top + 30,
+        getComputedStyle(document.documentElement).getPropertyValue("--success").trim() || "#39ff14"
+      );
+
+      const zone = $("invaderZone");
+      zone.style.transition = "top 0.3s ease-out, opacity 0.3s";
+      zone.style.top = (parseInt(zone.style.top) - 90) + "px";
+      zone.style.opacity = "0";
+    } else {
+      card.classList.add("wrong");
+      $("card"+correctIndex).classList.add("correct");
+
+      combo = 0;
+      mult = 1.0;
+      lives--;
+
+      createExplosion(
+        rect.left + rect.width/2,
+        rect.top,
+        getComputedStyle(document.documentElement).getPropertyValue("--danger").trim() || "#ff2e63"
+      );
+    }
+
+    updateHUD();
+
+    if(lives <= 0){
+      setTimeout(gameOver, 900);
+    } else {
+      setTimeout(nextRound, 1050);
+    }
+  }
+
+  function nextRound(){
+    answering = false;
+
+    const zone = $("invaderZone");
+    zone.style.transition = "none";
+    zone.style.opacity = "1";
+    zone.style.top = startY + "px";
+
+    const box = zone.querySelector(".prompt-box");
+    box.style.borderColor = "rgba(57,255,20,0.30)";
+    box.style.boxShadow = "0 0 30px rgba(57,255,20,0.10)";
+
+    pickQuestionAndRender();
+
+    setTimeout(()=>{
+      if(gameActive && !answering) startFalling();
+    }, 250);
+  }
+
+  function showMenu(){
+    $("menu").style.display = "flex";
+    $("game").style.display = "none";
+    $("intro").style.display = "none";
+  }
+
+  function showGame(){
+    $("menu").style.display = "none";
+    $("game").style.display = "block";
+  }
+
+  function showIntro(){
+    $("intro").style.display = "flex";
+  }
+
+  function hideIntro(){
+    $("intro").style.display = "none";
+  }
+
+  function startFlow(){
+    mode = Number($("levelSel").value);
+    $("introTitle").textContent = `Dette må du kunne (Nivå ${mode})`;
+    $("introContent").innerHTML = introHTML(mode);
+    showIntro();
+  }
+
+  function actuallyStartGame(){
+    hideIntro();
+    showGame();
+
+    resetGameState();
+
+    gameActive = true;
+    answering = false;
+
+    pickQuestionAndRender();
+    updateHUD();
+
+    setTimeout(()=>startFalling(), 450);
+  }
+
+  function quitGame(){
+    if(confirm("Avslutte spillet?")){
+      gameActive = false;
+      stopFalling();
+      showMenu();
+      resetGameState();
+    }
+  }
+
+  $("btnStart").addEventListener("click", startFlow);
+
+  $("btnIntroOk").addEventListener("click", actuallyStartGame);
+  $("btnIntroBack").addEventListener("click", ()=>{
+    hideIntro();
+    showMenu();
+  });
+
+  $("btnQuit").addEventListener("click", quitGame);
+
+  $("card0").addEventListener("click", ()=>selectAnswer(0));
+  $("card1").addEventListener("click", ()=>selectAnswer(1));
+  $("card2").addEventListener("click", ()=>selectAnswer(2));
+
+  document.addEventListener("keydown", (e)=>{
+    if(!gameActive) return;
+    if(e.key==="1") selectAnswer(0);
+    if(e.key==="2") selectAnswer(1);
+    if(e.key==="3") selectAnswer(2);
+  });
+
+  window.addEventListener("resize", ()=>{
+    if(gameActive) endY = getEndY();
+  });
+
+  showMenu();
+  resetGameState();
+</script>
+</body>
+</html>
