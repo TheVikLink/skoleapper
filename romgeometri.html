@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Romgeometri – Øving</title>
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f5ff;--card:#fff;--pri:#1d4ed8;--pl:#dbeafe;
+  --acc:#ea580c;--al:#ffedd5;--ok:#16a34a;--okl:#dcfce7;
+  --err:#dc2626;--errl:#fee2e2;--mut:#64748b;--brd:#e2e8f0;
+  --sh:0 2px 12px rgba(0,0,0,.08);--shl:0 8px 32px rgba(0,0,0,.12);
+  --r:14px;--rs:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:#1e293b;min-height:100vh;font-size:16px;}
+h1,h2,h3{font-family:'Syne',sans-serif;}
+.screen{display:none;}.screen.active{display:block;}
+
+/* ── HOME ── */
+#screen-home{min-height:100vh;padding:32px 16px;}
+#screen-home.active{display:flex;align-items:center;justify-content:center;}
+.home-card{background:var(--card);border-radius:24px;box-shadow:var(--shl);padding:40px 44px;max-width:700px;width:100%;}
+.home-hdr{text-align:center;margin-bottom:28px;}
+.home-hdr .ico{font-size:48px;margin-bottom:6px;}
+.home-hdr h1{font-size:2rem;color:var(--pri);margin-bottom:4px;}
+.home-hdr p{color:var(--mut);font-size:.94rem;}
+.sec-lbl{font-weight:800;font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);margin-bottom:9px;}
+.opt-sec{margin-bottom:22px;}
+.pill-grid{display:flex;flex-wrap:wrap;gap:8px;}
+/* Multi-select pills */
+.check-pill{display:flex;align-items:center;gap:7px;background:var(--pl);border:2px solid transparent;border-radius:50px;padding:7px 14px;cursor:pointer;font-weight:700;font-size:.87rem;color:var(--pri);transition:all .15s;user-select:none;}
+.check-pill:hover{border-color:var(--pri);}
+.check-pill.checked{background:var(--pri);color:#fff;}
+.pdot{width:16px;height:16px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;}
+.check-pill.checked .pdot::after{content:'✓';}
+/* Radio pills (count) */
+.radio-pill{background:#f1f5f9;border:2px solid transparent;border-radius:50px;padding:7px 20px;cursor:pointer;font-weight:800;font-size:.9rem;color:#334155;transition:all .15s;user-select:none;}
+.radio-pill:hover{border-color:var(--pri);color:var(--pri);}
+.radio-pill.checked{background:var(--pri);color:#fff;border-color:var(--pri);}
+.home-actions{display:flex;gap:12px;margin-top:28px;}
+.btn-pri{flex:1;background:var(--pri);color:#fff;border:none;border-radius:var(--r);padding:14px 24px;font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;cursor:pointer;transition:all .15s;}
+.btn-pri:hover{background:#1e40af;transform:translateY(-1px);}
+.btn-sec{background:var(--al);color:var(--acc);border:2px solid var(--acc);border-radius:var(--r);padding:14px 20px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-sec:hover{background:var(--acc);color:#fff;}
+.err-msg{color:var(--err);font-weight:700;font-size:.87rem;margin-top:10px;text-align:center;display:none;}
+.btn-retry{background:#7c3aed;color:#fff;border:none;border-radius:var(--r);padding:14px 20px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-retry:hover{background:#6d28d9;}
+.round-hint{font-size:.76rem;color:var(--mut);margin-top:6px;font-weight:600;padding:5px 7px;background:#f8fafc;border-radius:6px;border:1px solid var(--brd);}
+
+/* ── QUIZ ── */
+#screen-quiz{min-height:100vh;padding:14px;}
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:14px;max-width:1180px;margin-left:auto;margin-right:auto;}
+.btn-back{background:var(--card);border:2px solid var(--brd);border-radius:var(--rs);padding:7px 13px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:.83rem;color:var(--mut);transition:all .15s;}
+.btn-back:hover{border-color:var(--pri);color:var(--pri);}
+.prog-wrap{flex:1;background:var(--brd);border-radius:50px;height:9px;overflow:hidden;}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--pri),#818cf8);border-radius:50px;transition:width .4s;}
+.prog-lbl{font-weight:800;font-size:.87rem;color:var(--pri);white-space:nowrap;}
+.quiz-layout{display:grid;grid-template-columns:1fr 362px;gap:14px;max-width:1180px;margin:0 auto;align-items:start;}
+.q-panel{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:28px 32px;min-height:470px;}
+.q-badge{display:inline-block;background:var(--pl);color:var(--pri);border-radius:50px;padding:3px 12px;font-size:.79rem;font-weight:800;margin-bottom:14px;}
+.q-text{font-size:1.1rem;font-weight:700;margin-bottom:22px;line-height:1.6;}
+.q-fig{display:flex;justify-content:center;align-items:center;margin-top:8px;}
+.right-col{display:flex;flex-direction:column;gap:13px;}
+
+/* ── CALCULATOR ── */
+.calc-card{background:#1e293b;border-radius:var(--r);box-shadow:var(--sh);padding:14px;border:2px solid transparent;transition:border-color .2s;}
+.calc-card.kb-on{border-color:#3b82f6;}
+.calc-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.calc-ttl{color:#94a3b8;font-size:.71rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;}
+.kb-badge{font-size:.67rem;font-weight:800;border-radius:50px;padding:3px 9px;transition:all .2s;}
+.kb-badge.on{background:#1d4ed8;color:#93c5fd;}
+.kb-badge.off{background:#1f2937;color:#6b7280;}
+.calc-disp{background:#0f172a;border-radius:var(--rs);padding:10px 13px;margin-bottom:8px;min-height:62px;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;cursor:pointer;}
+.calc-disp:hover{background:#131d2e;}
+.copy-btn{position:absolute;right:6px;bottom:6px;background:#1d4ed8;border:none;border-radius:5px;padding:3px 8px;color:#bfdbfe;font-size:.68rem;font-weight:800;cursor:pointer;opacity:0;transition:opacity .15s;}
+.calc-disp:hover .copy-btn,.copy-btn:focus{opacity:1;}
+.copy-btn.copied{background:#16a34a;color:#dcfce7;}
+.calc-result-row{display:flex;align-items:center;justify-content:flex-end;gap:7px;}
+.calc-expr{color:#94a3b8;font-size:.8rem;min-height:16px;word-break:break-all;text-align:right;margin-bottom:2px;}
+.calc-result{color:#fff;font-size:1.4rem;font-weight:800;word-break:break-all;min-height:1.4rem;}
+.mem-lbl{color:#64748b;font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;}
+.mem-row{display:flex;gap:5px;margin-bottom:8px;}
+.mem-slot{flex:1;border-radius:6px;padding:5px 3px;cursor:pointer;border:1.5px solid #334155;background:#0f172a;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:1px;min-height:40px;justify-content:center;}
+.mem-slot:hover,.mem-slot:focus-visible{border-color:#60a5fa;outline:none;}
+.mem-slot.filled{border-color:#22d3ee;background:#082f49;}
+.mem-name{font-size:.59rem;font-weight:800;color:#64748b;}
+.mem-slot.filled .mem-name{color:#22d3ee;}
+.mem-val{font-size:.68rem;font-weight:700;color:#475569;text-align:center;word-break:break-all;max-width:100%;}
+.mem-slot.filled .mem-val{color:#e2e8f0;}
+.mem-x{color:#f87171;font-size:.63rem;cursor:pointer;font-weight:900;}
+.mem-x:hover{color:#fca5a5;}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
+.cbtn{background:#334155;color:#fff;border:none;border-radius:6px;padding:10px 2px;font-family:'Nunito',sans-serif;font-weight:700;font-size:.83rem;cursor:pointer;transition:background .1s,transform .1s;}
+.cbtn:hover{background:#475569;}
+.cbtn:active{transform:scale(.94);}
+.cbtn:focus-visible{outline:2px solid #60a5fa;outline-offset:2px;}
+.cbtn.op{background:#1d4ed8;}.cbtn.op:hover{background:#2563eb;}
+.cbtn.eq{background:#ea580c;grid-column:span 2;font-size:.92rem;}.cbtn.eq:hover{background:#f97316;}
+.cbtn.clr{background:#dc2626;}.cbtn.clr:hover{background:#ef4444;}
+.cbtn.spec{background:#7c3aed;font-size:.72rem;}.cbtn.spec:hover{background:#8b5cf6;}
+.cbtn.bk{background:#374151;font-size:.77rem;}.cbtn.bk:hover{background:#4b5563;}
+
+/* ── ANSWER ── */
+.ans-card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:18px;}
+.ans-lbl{font-weight:800;font-size:.81rem;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.ans-unk{font-weight:800;font-size:.94rem;color:var(--pri);margin-bottom:11px;}
+.ans-row{display:flex;gap:7px;align-items:stretch;margin-bottom:11px;}
+.ans-inp{flex:1;border:2px solid var(--brd);border-radius:var(--rs);padding:10px 12px;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:700;outline:none;transition:border-color .15s;min-width:0;}
+.ans-inp:focus{border-color:var(--pri);}
+.unit-sel{background:var(--pl);color:var(--pri);border:2px solid var(--pri);border-radius:var(--rs);padding:0 6px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.93rem;cursor:pointer;outline:none;flex-shrink:0;width:67px;appearance:none;-webkit-appearance:none;text-align:center;}
+.unit-sel:focus{box-shadow:0 0 0 3px #bfdbfe;}
+.btn-submit{width:100%;background:var(--pri);color:#fff;border:none;border-radius:var(--rs);padding:11px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.94rem;cursor:pointer;transition:all .15s;}
+.btn-submit:hover{background:#1e40af;}
+.btn-submit:disabled{background:#94a3b8;cursor:not-allowed;}
+.feedback{display:none;margin-top:11px;border-radius:var(--rs);padding:14px;}
+.feedback.ok{background:var(--okl);border:2px solid var(--ok);}
+.feedback.bad{background:var(--errl);border:2px solid var(--err);}
+.feedback.part{background:#fefce8;border:2px solid #ca8a04;}
+.fb-verdict{font-weight:800;font-size:.98rem;margin-bottom:5px;}
+.feedback.ok .fb-verdict{color:var(--ok);}
+.feedback.bad .fb-verdict{color:var(--err);}
+.feedback.part .fb-verdict{color:#92400e;}
+.fb-sol{font-size:.84rem;font-weight:600;color:#374151;line-height:1.65;}
+.fb-sol strong{color:var(--pri);}
+.btn-next{width:100%;margin-top:10px;background:var(--ok);color:#fff;border:none;border-radius:var(--rs);padding:11px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.94rem;cursor:pointer;transition:all .15s;display:none;}
+.btn-next:hover{background:#15803d;}
+
+/* ── RESULTS ── */
+#screen-results{min-height:100vh;padding:32px 16px;}
+#screen-results.active{display:flex;align-items:center;justify-content:center;}
+.res-card{background:var(--card);border-radius:24px;box-shadow:var(--shl);padding:40px 44px;max-width:560px;width:100%;text-align:center;}
+.score-ring{width:118px;height:118px;border-radius:50%;background:conic-gradient(var(--ok) var(--pct),var(--brd) var(--pct));display:flex;align-items:center;justify-content:center;margin:0 auto 18px;position:relative;}
+.score-ring::before{content:'';width:88px;height:88px;background:#fff;border-radius:50%;position:absolute;}
+.score-num{font-family:'Syne',sans-serif;font-size:1.75rem;font-weight:800;color:var(--pri);position:relative;z-index:1;}
+.res-title{font-size:1.4rem;margin-bottom:6px;color:var(--pri);}
+.res-sub{color:var(--mut);margin-bottom:24px;}
+.res-summ{text-align:left;margin-bottom:24px;}
+.sum-row{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--brd);font-size:.85rem;}
+.sum-row:last-child{border-bottom:none;}
+.sum-q{flex:1;font-weight:600;}
+.sum-a{font-weight:800;color:var(--pri);}
+.res-acts{display:flex;gap:12px;}
+
+/* ── FORMULA PAGE ── */
+#screen-formulas{min-height:100vh;}
+#screen-formulas.active{display:flex;flex-direction:column;}
+.form-topbar{display:flex;align-items:center;gap:14px;padding:18px 24px 0;max-width:1200px;width:100%;margin:0 auto;}
+.form-topbar h1{font-size:1.65rem;color:var(--pri);}
+.form-body{display:flex;flex:1;max-width:1200px;width:100%;margin:0 auto;padding:18px 24px 28px;gap:0;}
+/* Left nav */
+.form-nav{width:185px;flex-shrink:0;display:flex;flex-direction:column;gap:4px;padding-right:16px;border-right:2px solid var(--brd);}
+.form-nav-btn{background:none;border:none;border-radius:var(--rs);padding:10px 14px;text-align:left;font-family:'Nunito',sans-serif;font-weight:700;font-size:.9rem;color:var(--mut);cursor:pointer;transition:all .15s;}
+.form-nav-btn:hover{background:var(--pl);color:var(--pri);}
+.form-nav-btn.active{background:var(--pri);color:#fff;}
+/* Right content */
+.form-content{flex:1;padding-left:28px;min-height:500px;}
+.form-fig-wrap{display:flex;justify-content:center;margin-bottom:18px;}
+.form-var-legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-bottom:20px;font-size:.82rem;color:var(--mut);font-weight:600;}
+.form-var-legend span{display:flex;align-items:center;gap:4px;}
+.form-var-legend b{color:#1e293b;}
+.form-table{width:100%;border-collapse:collapse;}
+.form-table thead tr{background:var(--pl);}
+.form-table th{padding:9px 14px;text-align:left;font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--pri);}
+.form-table td{padding:10px 14px;border-bottom:1px solid var(--brd);vertical-align:middle;}
+.form-table tr:last-child td{border-bottom:none;}
+.ftag{display:inline-block;border-radius:4px;padding:2px 8px;font-weight:800;font-size:.74rem;}
+.ftag.v{background:var(--pl);color:var(--pri);}
+.ftag.o{background:var(--al);color:var(--acc);}
+.ftag.d{background:#f0fdf4;color:var(--ok);}
+.form-math{font-size:1.05rem;}
+
+/* ── Sub-formula selector ── */
+.sub-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+.sub-btn{background:#f1f5f9;border:2px solid transparent;border-radius:50px;padding:8px 18px;font-family:'Nunito',sans-serif;font-weight:700;font-size:.86rem;color:#334155;cursor:pointer;transition:all .15s;}
+.sub-btn:hover{border-color:#94a3b8;}
+.sub-btn.v.active{background:var(--pl);border-color:var(--pri);color:var(--pri);}
+.sub-btn.o.active{background:var(--al);border-color:var(--acc);color:var(--acc);}
+.sub-btn.d.active{background:#f0fdf4;border-color:var(--ok);color:var(--ok);}
+/* Big centered formula display */
+.form-formula-box{text-align:center;background:#f8fafc;border:2px solid var(--brd);border-radius:var(--rs);padding:14px 16px;margin-bottom:14px;font-size:1.05rem;min-height:64px;display:flex;align-items:center;justify-content:center;}
+/* Worked example box */
+.utregning{background:#fffbeb;border:1.5px solid #fbbf24;border-radius:var(--rs);padding:16px 20px;}
+.utregning-hdr{font-weight:800;font-size:.74rem;text-transform:uppercase;letter-spacing:.07em;color:#92400e;margin-bottom:5px;}
+.utregning-given{font-size:.86rem;font-weight:700;color:#78350f;margin-bottom:8px;font-style:italic;}
+.utregning-step{text-align:center;margin-bottom:0;}
+
+@media(max-width:820px){
+  .quiz-layout{grid-template-columns:1fr;}
+  .home-card{padding:24px 18px;}
+  .q-panel{padding:18px;}
+  .form-body{flex-direction:column;padding:14px 16px;}
+  .form-nav{width:100%;flex-direction:row;flex-wrap:wrap;border-right:none;border-bottom:2px solid var(--brd);padding:0 0 12px;margin-bottom:14px;}
+  .form-content{padding-left:0;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HOME ═══ -->
+<div id="screen-home" class="screen active">
+<div class="home-card">
+  <div class="home-hdr">
+    <div class="ico">📐</div>
+    <h1>Romgeometri</h1>
+    <p>Velg hva du vil øve på og start!</p>
+  </div>
+  <div class="opt-sec">
+    <div class="sec-lbl">Hva vil du beregne?</div>
+    <div class="pill-grid">
+      <label class="check-pill checked" data-group="type" data-val="volum"><span class="pdot"></span> Volum</label>
+      <label class="check-pill" data-group="type" data-val="overflate"><span class="pdot"></span> Overflate</label>
+    </div>
+  </div>
+  <div class="opt-sec">
+    <div class="sec-lbl">Figurer</div>
+    <div class="pill-grid">
+      <label class="check-pill checked" data-group="shape" data-val="firkPrisme"><span class="pdot"></span> Firkantet prisme</label>
+      <label class="check-pill checked" data-group="shape" data-val="trekPrisme"><span class="pdot"></span> Trekantet prisme</label>
+      <label class="check-pill checked" data-group="shape" data-val="pyramide"><span class="pdot"></span> Pyramide</label>
+      <label class="check-pill checked" data-group="shape" data-val="sylinder"><span class="pdot"></span> Sylinder</label>
+      <label class="check-pill checked" data-group="shape" data-val="kjegle"><span class="pdot"></span> Kjegle</label>
+      <label class="check-pill checked" data-group="shape" data-val="kule"><span class="pdot"></span> Kule</label>
+    </div>
+  </div>
+  <div class="opt-sec">
+    <div class="sec-lbl">Finn…</div>
+    <div class="pill-grid">
+      <label class="check-pill checked" data-group="calc" data-val="finnStorrelse"><span class="pdot"></span> Volum / Overflate</label>
+      <label class="check-pill checked" data-group="calc" data-val="finnHoyde"><span class="pdot"></span> Høyde</label>
+      <label class="check-pill checked" data-group="calc" data-val="finnRadius"><span class="pdot"></span> Radius</label>
+    </div>
+  </div>
+  <div class="opt-sec">
+    <div class="sec-lbl">Antall spørsmål</div>
+    <div class="pill-grid" id="count-group">
+      <label class="radio-pill checked" data-val="5">5</label>
+      <label class="radio-pill" data-val="10">10</label>
+      <label class="radio-pill" data-val="15">15</label>
+    </div>
+  </div>
+  <div id="home-err" class="err-msg"></div>
+  <div class="home-actions">
+    <button type="button" id="btn-start-quiz" class="btn-pri">▶ Start øving</button>
+    <button type="button" id="btn-show-formulas" class="btn-sec">📋 Formler</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══ QUIZ ═══ -->
+<div id="screen-quiz" class="screen">
+  <div class="topbar">
+    <button type="button" class="btn-back" onclick="goHome()">← Hjem</button>
+    <div style="font-weight:800;color:var(--pri);white-space:nowrap;">🧠 Øving</div>
+    <div class="prog-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+    <div class="prog-lbl" id="prog-lbl">1 / 5</div>
+  </div>
+  <div class="quiz-layout">
+    <div class="q-panel">
+      <div class="q-badge" id="q-badge"></div>
+      <div class="q-text" id="q-text"></div>
+      <div class="q-fig" id="q-fig"></div>
+    </div>
+    <div class="right-col">
+      <!-- Calculator -->
+      <div class="calc-card kb-on" id="calc-card">
+        <div class="calc-hdr">
+          <span class="calc-ttl">🔢 Kalkulator</span>
+        </div>
+        <div class="calc-disp" id="calc-disp" style="position:relative;">
+          <div class="calc-expr" id="calc-expr"></div>
+          <div class="calc-result-row">
+            <div class="calc-result" id="calc-result">–</div>
+            <button class="copy-btn" id="copy-btn" onclick="copyResult()" title="Kopier svar">📋</button>
+          </div>
+        </div>
+        <div class="mem-lbl">Mellomlagring – lagre: klikk tomt · hente: klikk fylt</div>
+        <div class="mem-row">
+          <div class="mem-slot" id="ms0" role="button" tabindex="0" aria-label="Minnelokasjon 1" onclick="memClick(0)" onkeydown="if(event.key==='Enter'||event.key===' ')memClick(0)">
+            <span class="mem-name">M1</span><span class="mem-val" id="mv0">＋</span>
+          </div>
+          <div class="mem-slot" id="ms1" role="button" tabindex="0" aria-label="Minnelokasjon 2" onclick="memClick(1)" onkeydown="if(event.key==='Enter'||event.key===' ')memClick(1)">
+            <span class="mem-name">M2</span><span class="mem-val" id="mv1">＋</span>
+          </div>
+          <div class="mem-slot" id="ms2" role="button" tabindex="0" aria-label="Minnelokasjon 3" onclick="memClick(2)" onkeydown="if(event.key==='Enter'||event.key===' ')memClick(2)">
+            <span class="mem-name">M3</span><span class="mem-val" id="mv2">＋</span>
+          </div>
+        </div>
+        <div class="calc-grid" role="group" aria-label="Kalkulator">
+          <button class="cbtn clr"  onclick="calcClear()"        aria-label="Slett alt"          tabindex="0">C</button>
+          <button class="cbtn op"   onclick="cPush('(')"          aria-label="Åpne parentes"      tabindex="0">(</button>
+          <button class="cbtn op"   onclick="cPush(')')"          aria-label="Lukk parentes"      tabindex="0">)</button>
+          <button class="cbtn op"   onclick="cPush('/')"          aria-label="Dele"               tabindex="0">÷</button>
+          <button class="cbtn"      onclick="cPush('7')"          aria-label="7"                  tabindex="0">7</button>
+          <button class="cbtn"      onclick="cPush('8')"          aria-label="8"                  tabindex="0">8</button>
+          <button class="cbtn"      onclick="cPush('9')"          aria-label="9"                  tabindex="0">9</button>
+          <button class="cbtn op"   onclick="cPush('*')"          aria-label="Gange"              tabindex="0">×</button>
+          <button class="cbtn"      onclick="cPush('4')"          aria-label="4"                  tabindex="0">4</button>
+          <button class="cbtn"      onclick="cPush('5')"          aria-label="5"                  tabindex="0">5</button>
+          <button class="cbtn"      onclick="cPush('6')"          aria-label="6"                  tabindex="0">6</button>
+          <button class="cbtn op"   onclick="cPush('-')"          aria-label="Minus"              tabindex="0">−</button>
+          <button class="cbtn"      onclick="cPush('1')"          aria-label="1"                  tabindex="0">1</button>
+          <button class="cbtn"      onclick="cPush('2')"          aria-label="2"                  tabindex="0">2</button>
+          <button class="cbtn"      onclick="cPush('3')"          aria-label="3"                  tabindex="0">3</button>
+          <button class="cbtn op"   onclick="cPush('+')"          aria-label="Pluss"              tabindex="0">+</button>
+          <button class="cbtn spec" onclick="cPush('Math.PI')"    aria-label="Pi (3,14159…)"      tabindex="0">π</button>
+          <button class="cbtn"      onclick="cPush('0')"          aria-label="0"                  tabindex="0">0</button>
+          <button class="cbtn"      onclick="cPush('.')"          aria-label="Desimalpunkt"       tabindex="0">.</button>
+          <button class="cbtn bk"   onclick="calcBack()"          aria-label="Slett siste tegn"   tabindex="0">⌫</button>
+          <button class="cbtn spec" onclick="cPush('Math.sqrt(')">√</button>
+          <button class="cbtn spec" onclick="cPush('Math.cbrt(')">∛</button>
+          <button class="cbtn spec" onclick="cPush('**2')">x²</button>
+          <button class="cbtn spec" onclick="cPush('**3')">x³</button>
+          <button class="cbtn eq"   onclick="calcEquals()" id="btn-eq" style="grid-column:span 4">=</button>
+        </div>
+      </div>
+      <!-- Answer -->
+      <div class="ans-card">
+        <div class="ans-lbl">Ditt svar</div>
+        <div class="ans-unk" id="ans-unk"></div>
+        <div class="ans-row">
+          <input type="text" inputmode="decimal" class="ans-inp" id="ans-inp"
+                 placeholder="Skriv inn…" autocomplete="off" aria-label="Svar">
+          <select class="unit-sel" id="unit-sel" aria-label="Velg enhet">
+            <option value="cm">cm</option>
+            <option value="cm²">cm²</option>
+            <option value="cm³">cm³</option>
+          </select>
+        </div>
+        <div class="round-hint">💡 Rund av til <b>2 desimaler</b> (f.eks. 3,14). Fasit godtar ±2 %.</div>
+        <button class="btn-submit" id="btn-submit" onclick="submitAnswer()">✓ Svar</button>
+        <div class="feedback" id="feedback">
+          <div class="fb-verdict" id="fb-verdict"></div>
+          <div class="fb-sol" id="fb-sol"></div>
+        </div>
+        <button class="btn-next" id="btn-next" onclick="nextQuestion()">Neste spørsmål →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RESULTS ═══ -->
+<div id="screen-results" class="screen">
+<div class="res-card">
+  <div class="score-ring" id="score-ring"><span class="score-num" id="score-num"></span></div>
+  <h2 class="res-title" id="res-title"></h2>
+  <p class="res-sub" id="res-sub"></p>
+  <div class="res-summ" id="res-summ"></div>
+  <div class="res-acts">
+    <button type="button" id="btn-new-test" class="btn-pri">↺ Ny test</button>
+    <button type="button" class="btn-retry" id="btn-retry" style="display:none">🔁 Øv på feil</button>
+    <button type="button" id="btn-results-home" class="btn-sec">⌂ Hjem</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══ FORMULAS ═══ -->
+<div id="screen-formulas" class="screen">
+  <div class="form-topbar">
+    <button type="button" id="btn-formulas-back" class="btn-back">← Tilbake</button>
+    <h1>📋 Formler – Romgeometri</h1>
+  </div>
+  <div class="form-body">
+    <nav class="form-nav" id="form-nav" aria-label="Velg figur"></nav>
+    <div class="form-content" id="form-content" aria-live="polite"></div>
+  </div>
+</div>
+
+<script>
+// ── Utility ─────────────────────────────────────────────
+function rand(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+function r1(x){return Math.round(x*10)/10;}
+function r2(x){return Math.round(x*100)/100;}
+function r3(x){return Math.round(x*1000)/1000;}
+function fmtN(x){return Math.abs(x-Math.round(x))<0.001?String(Math.round(x)):String(r2(x));}
+
+// ── SVG helpers ─────────────────────────────────────────
+const SC={f1:'#dbeafe',f2:'#bfdbfe',f3:'#93c5fd',str:'#1d4ed8',sw:2,lc:'#ea580c'};
+function dv(v){return typeof v==='number'?`${v} cm`:String(v);}
+
+function lbl(x,y,txt,anc='middle'){
+  const w=txt.length*8+14;
+  const ox=anc==='middle'?-w/2:anc==='end'?-w:0;
+  return `<rect x="${x+ox}" y="${y-15}" width="${w}" height="19" rx="3" fill="white" fill-opacity="0.93"/>`
+    +`<text x="${x}" y="${y}" text-anchor="${anc}" fill="${SC.lc}" font-size="13" font-weight="bold" font-family="Nunito,sans-serif">${txt}</text>`;
+}
+
+// ── SVG figures ─────────────────────────────────────────
+function svgBox(d){
+  const W=370,H=255,ox=35,oy=78,fw=140,fh=95,sk=55,skh=32;
+  return `<svg viewBox="0 0 ${W} ${H}" width="340" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="${ox},${oy+fh} ${ox+fw},${oy+fh} ${ox+fw},${oy} ${ox},${oy}" fill="${SC.f1}" stroke="${SC.str}" stroke-width="${SC.sw}"/>
+    <polygon points="${ox},${oy} ${ox+sk},${oy-skh} ${ox+fw+sk},${oy-skh} ${ox+fw},${oy}" fill="${SC.f2}" stroke="${SC.str}" stroke-width="${SC.sw}"/>
+    <polygon points="${ox+fw},${oy} ${ox+fw+sk},${oy-skh} ${ox+fw+sk},${oy+fh-skh} ${ox+fw},${oy+fh}" fill="${SC.f3}" stroke="${SC.str}" stroke-width="${SC.sw}"/>
+    <line x1="${ox}" y1="${oy+fh+12}" x2="${ox+fw}" y2="${oy+fh+12}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${ox}" y1="${oy+fh+7}" x2="${ox}" y2="${oy+fh+17}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${ox+fw}" y1="${oy+fh+7}" x2="${ox+fw}" y2="${oy+fh+17}" stroke="${SC.lc}" stroke-width="1.5"/>
+    ${lbl(ox+fw/2, oy+fh+32, dv(d.l))}
+    <line x1="${ox+fw+sk+12}" y1="${oy-skh}" x2="${ox+fw+sk+12}" y2="${oy+fh-skh}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${ox+fw+sk+7}" y1="${oy-skh}" x2="${ox+fw+sk+17}" y2="${oy-skh}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${ox+fw+sk+7}" y1="${oy+fh-skh}" x2="${ox+fw+sk+17}" y2="${oy+fh-skh}" stroke="${SC.lc}" stroke-width="1.5"/>
+    ${lbl(ox+fw+sk+40, oy+(fh-skh)/2+4, dv(d.h), 'start')}
+    <line x1="${ox+sk}" y1="${oy-skh-12}" x2="${ox+fw+sk}" y2="${oy-skh-12}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${ox+sk}" y1="${oy-skh-17}" x2="${ox+sk}" y2="${oy-skh-7}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${ox+fw+sk}" y1="${oy-skh-17}" x2="${ox+fw+sk}" y2="${oy-skh-7}" stroke="${SC.lc}" stroke-width="1.5"/>
+    ${lbl(ox+sk+fw/2, oy-skh-26, dv(d.b))}
+  </svg>`;
+}
+
+function svgTriPrisme(d){
+  const W=370,H=235;
+  const Ax=72,Ay=186, Bx=204,By=186, Cx=72,Cy=54;
+  const dx=106,dy=-28;
+  const Fx=Ax+dx,Fy=Ay+dy, Gx=Bx+dx,Gy=By+dy, Hx=Cx+dx,Hy=Cy+dy;
+  return `<svg viewBox="0 0 ${W} ${H}" width="340" xmlns="http://www.w3.org/2000/svg">
+    <line x1="${Fx}" y1="${Fy}" x2="${Gx}" y2="${Gy}" stroke="${SC.str}" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <line x1="${Gx}" y1="${Gy}" x2="${Hx}" y2="${Hy}" stroke="${SC.str}" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <line x1="${Hx}" y1="${Hy}" x2="${Fx}" y2="${Fy}" stroke="${SC.str}" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <line x1="${Ax}" y1="${Ay}" x2="${Fx}" y2="${Fy}" stroke="${SC.str}" stroke-width="${SC.sw}"/>
+    <line x1="${Bx}" y1="${By}" x2="${Gx}" y2="${Gy}" stroke="${SC.str}" stroke-width="${SC.sw}"/>
+    <line x1="${Cx}" y1="${Cy}" x2="${Hx}" y2="${Hy}" stroke="${SC.str}" stroke-width="${SC.sw}"/>
+    <polygon points="${Ax},${Ay} ${Fx},${Fy} ${Hx},${Hy} ${Cx},${Cy}" fill="${SC.f2}" stroke="${SC.str}" stroke-width="${SC.sw}" opacity="0.8"/>
+    <polygon points="${Bx},${By} ${Gx},${Gy} ${Hx},${Hy} ${Cx},${Cy}" fill="${SC.f3}" stroke="${SC.str}" stroke-width="${SC.sw}" opacity="0.85"/>
+    <polygon points="${Ax},${Ay} ${Bx},${By} ${Cx},${Cy}" fill="${SC.f1}" stroke="${SC.str}" stroke-width="${SC.sw}"/>
+    <polyline points="${Cx+10},${Cy} ${Cx+10},${Ay-1} ${Cx},${Ay-1}" fill="none" stroke="${SC.str}" stroke-width="1.2"/>
+    <!-- G: below base -->
+    <line x1="${Ax}" y1="${Ay+12}" x2="${Bx}" y2="${By+12}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${Ax}" y1="${Ay+7}" x2="${Ax}" y2="${Ay+17}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${Bx}" y1="${By+7}" x2="${Bx}" y2="${By+17}" stroke="${SC.lc}" stroke-width="1.5"/>
+    ${lbl((Ax+Bx)/2, Ay+31, dv(d.G))}
+    <!-- h: left outside -->
+    <line x1="${Cx-15}" y1="${Cy}" x2="${Cx-15}" y2="${Ay}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${Cx-20}" y1="${Cy}" x2="${Cx-10}" y2="${Cy}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${Cx-20}" y1="${Ay}" x2="${Cx-10}" y2="${Ay}" stroke="${SC.lc}" stroke-width="1.5"/>
+    ${lbl(Cx-32, (Cy+Ay)/2+5, dv(d.h), 'end')}
+    <!-- l: above top edge -->
+    <line x1="${Cx}" y1="${Cy-12}" x2="${Hx}" y2="${Hy-12}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${Cx}" y1="${Cy-17}" x2="${Cx}" y2="${Cy-7}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${Hx}" y1="${Hy-17}" x2="${Hx}" y2="${Hy-7}" stroke="${SC.lc}" stroke-width="1.5"/>
+    ${lbl((Cx+Hx)/2, Cy-25, dv(d.l))}
+  </svg>`;
+}
+
+function svgPyramide(d){
+  const W=360,H=255;
+  const p1x=60,p1y=192, p2x=215,p2y=192, p3x=260,p3y=153, p4x=105,p4y=153;
+  const apx=160,apy=38;
+  const cx=(p1x+p2x+p3x+p4x)/4, cy=(p1y+p2y+p3y+p4y)/4;
+  // midpoint of front base edge → apex: this is h₂ (høyde i sideflate)
+  const h2bx=(p1x+p2x)/2, h2by=p1y;
+  return `<svg viewBox="0 0 ${W} ${H}" width="330" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="${p1x},${p1y} ${p2x},${p2y} ${p3x},${p3y} ${p4x},${p4y}" fill="${SC.f2}" stroke="${SC.str}" stroke-width="${SC.sw}"/>
+    <line x1="${p3x}" y1="${p3y}" x2="${apx}" y2="${apy}" stroke="${SC.str}" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <line x1="${p4x}" y1="${p4y}" x2="${apx}" y2="${apy}" stroke="${SC.str}" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <polygon points="${p1x},${p1y} ${p2x},${p2y} ${apx},${apy}" fill="${SC.f1}" stroke="${SC.str}" stroke-width="${SC.sw}" opacity="0.85"/>
+    <polygon points="${p2x},${p2y} ${p3x},${p3y} ${apx},${apy}" fill="${SC.f3}" stroke="${SC.str}" stroke-width="${SC.sw}" opacity="0.88"/>
+    <polygon points="${p1x},${p1y} ${p4x},${p4y} ${apx},${apy}" fill="${SC.f1}" stroke="${SC.str}" stroke-width="${SC.sw}" opacity="0.7"/>
+    <line x1="${apx}" y1="${apy}" x2="${cx}" y2="${cy}" stroke="${SC.lc}" stroke-width="1.4" stroke-dasharray="5,3"/>
+    <circle cx="${cx}" cy="${cy}" r="3" fill="${SC.lc}"/>
+    <!-- h₂: høyde i sideflate – from midpoint of front base to apex -->
+    <line x1="${h2bx}" y1="${h2by}" x2="${apx}" y2="${apy}" stroke="${SC.lc}" stroke-width="2" stroke-dasharray="6,3"/>
+    <circle cx="${h2bx}" cy="${h2by}" r="3" fill="${SC.lc}"/>
+    ${lbl(h2bx-22, (h2by+apy)/2+4, dv(d.h2||'h₂'), 'end')}
+    <!-- base label -->
+    <line x1="${p1x}" y1="${p1y+12}" x2="${p2x}" y2="${p2y+12}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${p1x}" y1="${p1y+7}" x2="${p1x}" y2="${p1y+17}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${p2x}" y1="${p2y+7}" x2="${p2x}" y2="${p2y+17}" stroke="${SC.lc}" stroke-width="1.5"/>
+    ${lbl((p1x+p2x)/2, p1y+31, dv(d.a))}
+    <!-- h₁: vertical height -->
+    <line x1="${p3x+14}" y1="${apy}" x2="${p3x+14}" y2="${cy}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${p3x+9}" y1="${apy}" x2="${p3x+19}" y2="${apy}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${p3x+9}" y1="${cy}" x2="${p3x+19}" y2="${cy}" stroke="${SC.lc}" stroke-width="1.5"/>
+    ${lbl(p3x+40, (apy+cy)/2+4, dv(d.h), 'start')}
+  </svg>`;
+}
+
+function svgSylinder(d){
+  const W=298,H=210,cx=114,topY=38,ew=82,eh=19,bh=130;
+  return `<svg viewBox="0 0 ${W} ${H}" width="272" xmlns="http://www.w3.org/2000/svg">
+    <rect x="${cx-ew}" y="${topY}" width="${ew*2}" height="${bh}" fill="${SC.f1}" stroke="none"/>
+    <ellipse cx="${cx}" cy="${topY+bh}" rx="${ew}" ry="${eh}" fill="${SC.f3}" stroke="${SC.str}" stroke-width="${SC.sw}"/>
+    <line x1="${cx-ew}" y1="${topY}" x2="${cx-ew}" y2="${topY+bh}" stroke="${SC.str}" stroke-width="${SC.sw}"/>
+    <line x1="${cx+ew}" y1="${topY}" x2="${cx+ew}" y2="${topY+bh}" stroke="${SC.str}" stroke-width="${SC.sw}"/>
+    <ellipse cx="${cx}" cy="${topY}" rx="${ew}" ry="${eh}" fill="${SC.f2}" stroke="${SC.str}" stroke-width="${SC.sw}"/>
+    <line x1="${cx}" y1="${topY}" x2="${cx+ew}" y2="${topY}" stroke="${SC.lc}" stroke-width="2"/>
+    <circle cx="${cx}" cy="${topY}" r="3" fill="${SC.lc}"/>
+    ${lbl(cx+ew/2, topY-12, dv(d.r))}
+    <line x1="${cx+ew+13}" y1="${topY}" x2="${cx+ew+13}" y2="${topY+bh}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${cx+ew+8}" y1="${topY}" x2="${cx+ew+18}" y2="${topY}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${cx+ew+8}" y1="${topY+bh}" x2="${cx+ew+18}" y2="${topY+bh}" stroke="${SC.lc}" stroke-width="1.5"/>
+    ${lbl(cx+ew+38, topY+bh/2+4, dv(d.h), 'start')}
+  </svg>`;
+}
+
+function svgKjegle(d){
+  const W=305,H=220,cx=130,apY=28,baseY=174,ew=90,eh=20;
+  return `<svg viewBox="0 0 ${W} ${H}" width="275" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="${cx},${apY} ${cx-ew},${baseY} ${cx+ew},${baseY}" fill="${SC.f1}" stroke="none"/>
+    <ellipse cx="${cx}" cy="${baseY}" rx="${ew}" ry="${eh}" fill="${SC.f2}" stroke="${SC.str}" stroke-width="${SC.sw}"/>
+    <line x1="${cx}" y1="${apY}" x2="${cx-ew}" y2="${baseY}" stroke="${SC.str}" stroke-width="${SC.sw}"/>
+    <line x1="${cx}" y1="${apY}" x2="${cx+ew}" y2="${baseY}" stroke="${SC.str}" stroke-width="${SC.sw}"/>
+    <line x1="${cx}" y1="${apY}" x2="${cx}" y2="${baseY}" stroke="${SC.lc}" stroke-width="1.3" stroke-dasharray="5,3" opacity="0.65"/>
+    <line x1="${cx-ew-16}" y1="${apY}" x2="${cx-ew-16}" y2="${baseY}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${cx-ew-21}" y1="${apY}" x2="${cx-ew-11}" y2="${apY}" stroke="${SC.lc}" stroke-width="1.5"/>
+    <line x1="${cx-ew-21}" y1="${baseY}" x2="${cx-ew-11}" y2="${baseY}" stroke="${SC.lc}" stroke-width="1.5"/>
+    ${lbl(cx-ew-38, (apY+baseY)/2+4, dv(d.h), 'end')}
+    <line x1="${cx}" y1="${baseY}" x2="${cx+ew}" y2="${baseY}" stroke="${SC.lc}" stroke-width="2"/>
+    <circle cx="${cx}" cy="${baseY}" r="3" fill="${SC.lc}"/>
+    ${lbl(cx+ew/2, baseY+eh+18, dv(d.r))}
+  </svg>`;
+}
+
+function svgKule(d){
+  const W=240,H=218,cx=118,cy=112,r=82;
+  const lx=cx+r*0.707, ly=cy-r*0.707;
+  return `<svg viewBox="0 0 ${W} ${H}" width="218" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="kg_rg" cx="38%" cy="33%">
+        <stop offset="0%" stop-color="#eff6ff"/>
+        <stop offset="100%" stop-color="${SC.f3}"/>
+      </radialGradient>
+    </defs>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#kg_rg)" stroke="${SC.str}" stroke-width="${SC.sw}"/>
+    <ellipse cx="${cx}" cy="${cy}" rx="${r}" ry="${Math.round(r*0.27)}" fill="none" stroke="${SC.str}" stroke-width="1.2" stroke-dasharray="5,3"/>
+    <line x1="${cx}" y1="${cy}" x2="${lx}" y2="${ly}" stroke="${SC.lc}" stroke-width="2"/>
+    <circle cx="${cx}" cy="${cy}" r="3" fill="${SC.lc}"/>
+    ${lbl(lx+10, ly-8, dv(d.r), 'start')}
+  </svg>`;
+}
+
+// ── Question generators ──────────────────────────────────
+function qFirkantetVolum(){
+  const l=rand(3,14),b=rand(2,12),h=rand(2,10),V=l*b*h;
+  return{shape:'Firkantet prisme',unk:'Volum (V)',unit:'cm³',
+    q:`Finn volumet av det firkantede prismet med lengde <b>${l} cm</b>, bredde <b>${b} cm</b> og høyde <b>${h} cm</b>.`,
+    svg:svgBox({l,b,h}),ans:V,
+    sol:`V = l × b × h = ${l} × ${b} × ${h} = <strong>${V} cm³</strong>`};
+}
+function qFirkantetHoyde(){
+  const l=rand(3,12),b=rand(2,10),h=rand(2,10),V=l*b*h;
+  return{shape:'Firkantet prisme',unk:'Høyde (h)',unit:'cm',
+    q:`Et firkantet prisme har volum <b>${V} cm³</b>, lengde <b>${l} cm</b> og bredde <b>${b} cm</b>. Finn høyden.`,
+    svg:svgBox({l,b,h:'?'}),ans:h,
+    sol:`h = V ÷ (l × b) = ${V} ÷ (${l} × ${b}) = ${V} ÷ ${l*b} = <strong>${h} cm</strong>`};
+}
+function qFirkantetOverflate(){
+  const l=rand(3,12),b=rand(2,10),h=rand(2,9),O=2*(l*b+l*h+b*h);
+  return{shape:'Firkantet prisme',unk:'Overflate (O)',unit:'cm²',
+    q:`Finn overflatearealet av et firkantet prisme: lengde <b>${l} cm</b>, bredde <b>${b} cm</b>, høyde <b>${h} cm</b>.`,
+    svg:svgBox({l,b,h}),ans:O,
+    sol:`O = 2(lb+lh+bh) = 2(${l*b}+${l*h}+${b*h}) = 2×${l*b+l*h+b*h} = <strong>${O} cm²</strong>`};
+}
+function qTrekantVolum(){
+  const g=rand(4,14),h=rand(3,12),l=rand(4,15),V=0.5*g*h*l;
+  return{shape:'Trekantet prisme',unk:'Volum (V)',unit:'cm³',
+    q:`Finn volumet av et trekantet prisme (rettvinklet) med grunnlinje <b>g = ${g} cm</b>, høyde <b>${h} cm</b> og lengde <b>${l} cm</b>.`,
+    svg:svgTriPrisme({G:g,h,l}),ans:V,
+    sol:`V = g × h × l ÷ 2 = ${g} × ${h} × ${l} ÷ 2 = <strong>${V} cm³</strong>`};
+}
+function qTrekantHoyde(){
+  const g=rand(4,14),h=rand(3,12),l=rand(4,14),V=0.5*g*h*l;
+  return{shape:'Trekantet prisme',unk:'Trekanths høyde (h)',unit:'cm',
+    q:`Et trekantet prisme har volum <b>${V} cm³</b>, grunnlinje <b>g = ${g} cm</b> og lengde <b>${l} cm</b>. Finn høyden.`,
+    svg:svgTriPrisme({G:g,h:'?',l}),ans:h,
+    sol:`h = 2V ÷ (g × l) = ${2*V} ÷ ${g*l} = <strong>${h} cm</strong>`};
+}
+function qTrekantOverflate(){
+  const g=rand(4,12),h=rand(3,10),l=rand(5,15);
+  const c=r2(Math.sqrt(g*g+h*h));
+  const OO=r1((g+h+c)*l+g*h);
+  return{shape:'Trekantet prisme',unk:'Overflate (O)',unit:'cm²',
+    q:`Finn overflatearealet av et trekantet prisme (rettvinklet) med kateter <b>g = ${g} cm</b> og <b>${h} cm</b>, lengde <b>${l} cm</b>.`,
+    svg:svgTriPrisme({G:g,h,l}),ans:OO,
+    sol:`c = √(g²+h²) = √(${g*g}+${h*h}) = ${c} cm<br>O = (g+h+c)×l + g×h<br>= (${g}+${h}+${c})×${l} + ${g*h} ≈ <strong>${OO} cm²</strong>`};
+}
+function qPyramideVolum(){
+  const a=rand(4,14),h=rand(4,14),V=r2((1/3)*a*a*h);
+  return{shape:'Pyramide',unk:'Volum (V)',unit:'cm³',
+    q:`Finn volumet av en pyramide med kvadratisk grunnflate, side <b>${a} cm</b> og høyde <b>${h} cm</b>.`,
+    svg:svgPyramide({a,h}),ans:V,
+    sol:`V = a² × h ÷ 3 = ${a*a} × ${h} ÷ 3 ≈ <strong>${V} cm³</strong>`};
+}
+function qPyramideHoyde(){
+  const a=rand(4,12),h=rand(3,12),V=r2((1/3)*a*a*h);
+  return{shape:'Pyramide',unk:'Høyde (h)',unit:'cm',
+    q:`En pyramide med kvadratisk grunnflate (side <b>${a} cm</b>) har volum <b>${V} cm³</b>. Finn høyden.`,
+    svg:svgPyramide({a,h:'?'}),ans:h,
+    sol:`h = 3V ÷ a² = ${3*V} ÷ ${a*a} = <strong>${h} cm</strong>`};
+}
+function qPyramideOverflate(){
+  const a=rand(4,12),h=rand(4,14);
+  const sl=r2(Math.sqrt(h*h+(a/2)*(a/2))),O=r1(a*a+2*a*sl);
+  return{shape:'Pyramide',unk:'Overflate (O)',unit:'cm²',
+    q:`Finn overflatearealet av en pyramide med kvadratisk grunnflate, side <b>${a} cm</b> og høyde <b>${h} cm</b>.`,
+    svg:svgPyramide({a,h}),ans:O,
+    sol:`s = √(h²+(a/2)²) = ${sl} cm<br>O = a² + 2as = ${a*a} + ${r1(2*a*sl)} ≈ <strong>${O} cm²</strong>`};
+}
+function qSylinderVolum(){
+  const r=rand(2,10),h=rand(3,14),V=r1(Math.PI*r*r*h);
+  return{shape:'Sylinder',unk:'Volum (V)',unit:'cm³',
+    q:`Finn volumet av en sylinder med radius <b>${r} cm</b> og høyde <b>${h} cm</b>.`,
+    svg:svgSylinder({r,h}),ans:V,
+    sol:`V = π × r² × h = π × ${r*r} × ${h} ≈ <strong>${V} cm³</strong>`};
+}
+function qSylinderHoyde(){
+  const r=rand(2,9),h=rand(3,14),V=r1(Math.PI*r*r*h);
+  return{shape:'Sylinder',unk:'Høyde (h)',unit:'cm',
+    q:`En sylinder med radius <b>${r} cm</b> har volum <b>${V} cm³</b>. Finn høyden.`,
+    svg:svgSylinder({r,h:'?'}),ans:h,
+    sol:`h = V ÷ (π×r²) = ${V} ÷ ${r1(Math.PI*r*r)} ≈ <strong>${h} cm</strong>`};
+}
+function qSylinderRadius(){
+  const r=rand(2,9),h=rand(3,14),V=r1(Math.PI*r*r*h);
+  return{shape:'Sylinder',unk:'Radius (r)',unit:'cm',
+    q:`En sylinder med høyde <b>${h} cm</b> har volum <b>${V} cm³</b>. Finn radiusen.`,
+    svg:svgSylinder({r:'?',h}),ans:r,
+    sol:`r² = V ÷ (π×h) ≈ ${r2(V/(Math.PI*h))}<br>r ≈ <strong>${r} cm</strong>`};
+}
+function qSylinderOverflate(){
+  const r=rand(2,9),h=rand(3,13),O=r1(2*Math.PI*r*(r+h));
+  return{shape:'Sylinder',unk:'Overflate (O)',unit:'cm²',
+    q:`Finn overflatearealet av en sylinder med radius <b>${r} cm</b> og høyde <b>${h} cm</b>.`,
+    svg:svgSylinder({r,h}),ans:O,
+    sol:`O = 2πr² + 2πrh = 2π×${r*r} + 2π×${r}×${h} = ${r1(2*Math.PI*r*r)} + ${r1(2*Math.PI*r*h)} ≈ <strong>${O} cm²</strong>`};
+}
+function qSylinderHoydeOF(){
+  const r=rand(2,9),h=rand(3,12),O=r1(2*Math.PI*r*(r+h));
+  return{shape:'Sylinder',unk:'Høyde (h)',unit:'cm',
+    q:`En sylinder med radius <b>${r} cm</b> har overflate <b>${O} cm²</b>. Finn høyden.`,
+    svg:svgSylinder({r,h:'?'}),ans:h,
+    sol:`h = (O−2πr²)÷(2πr) = (${O}−${r1(2*Math.PI*r*r)})÷${r1(2*Math.PI*r)} ≈ <strong>${h} cm</strong>`};
+}
+function qKjegleVolum(){
+  const r=rand(2,10),h=rand(4,15),V=r1((1/3)*Math.PI*r*r*h);
+  return{shape:'Kjegle',unk:'Volum (V)',unit:'cm³',
+    q:`Finn volumet av en kjegle med radius <b>${r} cm</b> og høyde <b>${h} cm</b>.`,
+    svg:svgKjegle({r,h}),ans:V,
+    sol:`V = π × r² × h ÷ 3 = π × ${r*r} × ${h} ÷ 3 ≈ <strong>${V} cm³</strong>`};
+}
+function qKjegleHoyde(){
+  const r=rand(2,9),h=rand(3,14),V=r1((1/3)*Math.PI*r*r*h);
+  return{shape:'Kjegle',unk:'Høyde (h)',unit:'cm',
+    q:`En kjegle med radius <b>${r} cm</b> har volum <b>${V} cm³</b>. Finn høyden.`,
+    svg:svgKjegle({r,h:'?'}),ans:h,
+    sol:`h = 3V ÷ (π×r²) = ${3*V} ÷ ${r1(Math.PI*r*r)} ≈ <strong>${h} cm</strong>`};
+}
+function qKjegleRadius(){
+  const r=rand(2,9),h=rand(4,14),V=r1((1/3)*Math.PI*r*r*h);
+  return{shape:'Kjegle',unk:'Radius (r)',unit:'cm',
+    q:`En kjegle med høyde <b>${h} cm</b> har volum <b>${V} cm³</b>. Finn radiusen.`,
+    svg:svgKjegle({r:'?',h}),ans:r,
+    sol:`r² = 3V ÷ (π×h) ≈ ${r2(3*V/(Math.PI*h))}<br>r ≈ <strong>${r} cm</strong>`};
+}
+function qKuleVolum(){
+  const r=rand(2,10),V=r1((4/3)*Math.PI*r*r*r);
+  return{shape:'Kule',unk:'Volum (V)',unit:'cm³',
+    q:`Finn volumet av en kule med radius <b>${r} cm</b>.`,
+    svg:svgKule({r}),ans:V,
+    sol:`V = 4 × π × r³ ÷ 3 = 4 × π × ${r*r*r} ÷ 3 ≈ <strong>${V} cm³</strong>`};
+}
+function qKuleOverflate(){
+  const r=rand(2,10),O=r1(4*Math.PI*r*r);
+  return{shape:'Kule',unk:'Overflate (O)',unit:'cm²',
+    q:`Finn overflatearealet av en kule med radius <b>${r} cm</b>.`,
+    svg:svgKule({r}),ans:O,
+    sol:`O = 4 × π × r² = 4 × π × ${r*r} ≈ <strong>${O} cm²</strong>`};
+}
+
+// ── Pool ─────────────────────────────────────────────────
+const ALL=[
+  {sk:'firkPrisme', t:'volum',    c:'finnStorrelse', fn:qFirkantetVolum},
+  {sk:'firkPrisme', t:'volum',    c:'finnHoyde',     fn:qFirkantetHoyde},
+  {sk:'firkPrisme', t:'overflate',c:'finnStorrelse', fn:qFirkantetOverflate},
+  {sk:'trekPrisme', t:'volum',    c:'finnStorrelse', fn:qTrekantVolum},
+  {sk:'trekPrisme', t:'volum',    c:'finnHoyde',     fn:qTrekantHoyde},
+  {sk:'trekPrisme', t:'overflate',c:'finnStorrelse', fn:qTrekantOverflate},
+  {sk:'pyramide',   t:'volum',    c:'finnStorrelse', fn:qPyramideVolum},
+  {sk:'pyramide',   t:'volum',    c:'finnHoyde',     fn:qPyramideHoyde},
+  {sk:'pyramide',   t:'overflate',c:'finnStorrelse', fn:qPyramideOverflate},
+  {sk:'sylinder',   t:'volum',    c:'finnStorrelse', fn:qSylinderVolum},
+  {sk:'sylinder',   t:'volum',    c:'finnHoyde',     fn:qSylinderHoyde},
+  {sk:'sylinder',   t:'volum',    c:'finnRadius',    fn:qSylinderRadius},
+  {sk:'sylinder',   t:'overflate',c:'finnStorrelse', fn:qSylinderOverflate},
+  {sk:'sylinder',   t:'overflate',c:'finnHoyde',     fn:qSylinderHoydeOF},
+  {sk:'kjegle',     t:'volum',    c:'finnStorrelse', fn:qKjegleVolum},
+  {sk:'kjegle',     t:'volum',    c:'finnHoyde',     fn:qKjegleHoyde},
+  {sk:'kjegle',     t:'volum',    c:'finnRadius',    fn:qKjegleRadius},
+  {sk:'kule',       t:'volum',    c:'finnStorrelse', fn:qKuleVolum},
+  {sk:'kule',       t:'overflate',c:'finnStorrelse', fn:qKuleOverflate},
+];
+
+function getSel(){
+  const t=[],s=[],c=[];
+  document.querySelectorAll('[data-group="type"].checked').forEach(e=>t.push(e.dataset.val));
+  document.querySelectorAll('[data-group="shape"].checked').forEach(e=>s.push(e.dataset.val));
+  document.querySelectorAll('[data-group="calc"].checked').forEach(e=>c.push(e.dataset.val));
+  const countPill=document.querySelector('#count-group .radio-pill.checked');
+  const n=parseInt(countPill?.dataset.val||'5');
+  return{t,s,c,n};
+}
+
+// ── Quiz state ───────────────────────────────────────────
+let quiz={questions:[],cur:0,score:0,answers:[],total:5};
+
+function startQuiz(){
+  const{t,s,c,n}=getSel();
+  const errEl=document.getElementById('home-err');
+  if(!t.length||!s.length||!c.length){
+    errEl.textContent='Velg minst én figur, ett type og ett spørsmålstype!';
+    errEl.style.display='block';return;
+  }
+  const pool=ALL.filter(g=>s.includes(g.sk)&&t.includes(g.t)&&c.includes(g.c));
+  if(!pool.length){
+    errEl.textContent='Ingen gyldige oppgavetyper for disse valgene.';
+    errEl.style.display='block';return;
+  }
+  errEl.style.display='none';
+  const qs=[];
+  for(let i=0;i<n;i++) qs.push([...pool].sort(()=>Math.random()-.5)[0].fn());
+  quiz={questions:qs,cur:0,score:0,answers:[],total:n};
+  resetMem();
+  showScreen('screen-quiz');
+  loadQ(0);
+}
+
+function loadQ(idx){
+  const q=quiz.questions[idx];
+  const pct=(idx/quiz.total)*100;
+  document.getElementById('prog-bar').style.width=`${pct}%`;
+  document.getElementById('prog-lbl').textContent=`${idx+1} / ${quiz.total}`;
+  document.getElementById('q-badge').textContent=q.shape;
+  document.getElementById('q-text').innerHTML=q.q;
+  document.getElementById('q-fig').innerHTML=q.svg;
+  document.getElementById('ans-unk').textContent=`Finn: ${q.unk}`;
+  document.getElementById('unit-sel').value='cm';
+  document.getElementById('unit-sel').disabled=false;
+  const inp=document.getElementById('ans-inp');
+  inp.value='';inp.disabled=false;inp.style.borderColor='';
+  document.getElementById('btn-submit').disabled=false;
+  document.getElementById('btn-submit').style.display='';
+  document.getElementById('feedback').style.display='none';
+  document.getElementById('btn-next').style.display='none';
+  calcClear();
+  resetMem();
+}
+
+function submitAnswer(){
+  const inp=document.getElementById('ans-inp');
+  const val=parseFloat(inp.value.replace(',','.'));
+  if(isNaN(val)){inp.style.borderColor='var(--err)';inp.focus();return;}
+  inp.style.borderColor='';
+  const selUnit=document.getElementById('unit-sel').value;
+  inp.disabled=true;
+  document.getElementById('unit-sel').disabled=true;
+  document.getElementById('btn-submit').disabled=true;
+  document.getElementById('btn-submit').style.display='none';
+  const q=quiz.questions[quiz.cur];
+  const numOk=Math.abs(val-q.ans)/Math.max(Math.abs(q.ans),0.001)<0.02||Math.abs(val-q.ans)<0.25;
+  const unitOk=selUnit===q.unit;
+  const isCorrect=numOk&&unitOk;
+  quiz.answers.push({qt:q.q.replace(/<[^>]+>/g,''),ans:q.ans,unit:q.unit,isCorrect});
+  if(isCorrect) quiz.score++;
+  const fb=document.getElementById('feedback');
+  let cls,verdict,extra='';
+  if(isCorrect){cls='ok';verdict=`✅ Riktig! ${fmtN(val)} ${selUnit}`;}
+  else if(numOk&&!unitOk){cls='part';verdict=`⚠️ Riktig tall – feil enhet!`;extra=`Du valgte <b>${selUnit}</b>, riktig er <strong>${q.unit}</strong>.<br><br>`;}
+  else if(!numOk&&unitOk){cls='bad';verdict=`❌ Riktig enhet – feil tall.`;extra=`Fasit: <strong>${fmtN(q.ans)} ${q.unit}</strong><br><br>`;}
+  else{cls='bad';verdict=`❌ Ikke riktig – fasit: <strong>${fmtN(q.ans)} ${q.unit}</strong>`;}
+  fb.className='feedback '+cls;
+  document.getElementById('fb-verdict').innerHTML=verdict;
+  document.getElementById('fb-sol').innerHTML=extra+`<b>Utregning:</b><br>${q.sol}`;
+  fb.style.display='block';
+  const bn=document.getElementById('btn-next');
+  bn.style.display='block';
+  bn.textContent=quiz.cur<quiz.total-1?'Neste spørsmål →':'📊 Se resultater';
+  bn.focus();
+}
+
+function nextQuestion(){
+  quiz.cur++;
+  if(quiz.cur>=quiz.total) showResults();
+  else loadQ(quiz.cur);
+}
+
+function showResults(){
+  document.getElementById('prog-bar').style.width='100%';
+  showScreen('screen-results');
+  const pct=quiz.score/quiz.total;
+  document.getElementById('score-ring').style.setProperty('--pct',`${pct*360}deg`);
+  document.getElementById('score-num').textContent=`${quiz.score}/${quiz.total}`;
+  const tt=['Øv mer! 💪','Greit forsøk! 🙂','Halvveis! 👍','Bra jobbet! 🎉','Veldig bra! 🌟','Perfekt! ⭐'];
+  const idx=Math.min(Math.round(pct*5),5);
+  document.getElementById('res-title').textContent=tt[idx];
+  document.getElementById('res-sub').textContent=`Du svarte riktig på ${quiz.score} av ${quiz.total} spørsmål.`;
+  document.getElementById('res-summ').innerHTML=quiz.answers.map((a,i)=>`
+    <div class="sum-row">
+      <span>${a.isCorrect?'✅':'❌'}</span>
+      <span class="sum-q">Spm ${i+1}: ${a.qt.substring(0,58)}…</span>
+      <span class="sum-a">${fmtN(a.ans)} ${a.unit}</span>
+    </div>`).join('');
+  // Show retry button only if there are wrong answers
+  const wrongQs=quiz.questions.filter((_,i)=>!quiz.answers[i]?.isCorrect);
+  const retryBtn=document.getElementById('btn-retry');
+  retryBtn.style.display=wrongQs.length?'':'none';
+  retryBtn.textContent=`🔁 Øv på feil (${wrongQs.length})`;
+}
+
+function retryWrong(){
+  const wrongQs=quiz.questions.filter((_,i)=>!quiz.answers[i]?.isCorrect);
+  if(!wrongQs.length) return;
+  quiz={questions:wrongQs,cur:0,score:0,answers:[],total:wrongQs.length};
+  resetMem();
+  showScreen('screen-quiz');
+  loadQ(0);
+}
+
+// ── Calculator (no live preview) ─────────────────────────
+const calc={tokens:[],result:'',lastEq:false};
+
+function cPush(v){
+  if(calc.lastEq){
+    calc.lastEq=false;
+    const isOp=['+','-','*','/','**2','**3'].includes(v);
+    if(!isOp){ calc.tokens=[]; calc.result=''; }
+  }
+  calc.tokens.push(v);
+  updateCalc();
+}
+function calcClear(){
+  calc.tokens=[];calc.result='';calc.lastEq=false;updateCalc();
+}
+function calcBack(){
+  if(calc.tokens.length){calc.tokens.pop();updateCalc();}
+}
+function calcEquals(){
+  const expr=calc.tokens.join('');
+  if(!expr) return;
+  try{
+    const res=Function('"use strict";return('+expr+')')();
+    if(typeof res==='number'&&isFinite(res)){
+      calc.result=r3(res).toString();
+      calc.tokens=[calc.result];
+      calc.lastEq=true;
+    } else calc.result='Feil';
+  }catch{calc.result='Feil';}
+  updateCalc();
+}
+function fmtExpr(tok){
+  return tok.join('')
+    .replace(/Math\.sqrt\(/g,'√(').replace(/Math\.cbrt\(/g,'∛(')
+    .replace(/Math\.PI/g,'π').replace(/\*\*2/g,'²').replace(/\*\*3/g,'³')
+    .replace(/\*\*/g,'^').replace(/\*/g,'×').replace(/\//g,'÷');
+}
+function updateCalc(){
+  document.getElementById('calc-expr').textContent=fmtExpr(calc.tokens);
+  document.getElementById('calc-result').textContent=calc.result||'–';
+}
+
+// ── Memory ───────────────────────────────────────────────
+const mem=[null,null,null];
+function memClick(i){
+  if(mem[i]===null){
+    if(calc.result&&calc.result!=='Feil')mem[i]=calc.result;
+  } else {
+    if(calc.lastEq){calc.tokens=[];calc.lastEq=false;}
+    calc.tokens.push(mem[i]);
+    updateCalc();
+  }
+  updateMemDisplay();
+}
+function memDel(i,e){e.stopPropagation();mem[i]=null;updateMemDisplay();}
+function updateMemDisplay(){
+  for(let i=0;i<3;i++){
+    const sl=document.getElementById(`ms${i}`);
+    const vl=document.getElementById(`mv${i}`);
+    if(mem[i]!==null){
+      sl.classList.add('filled');
+      vl.innerHTML=mem[i]+` <span class="mem-x" onclick="memDel(${i},event)" title="Fjern M${i+1}">×</span>`;
+    } else {sl.classList.remove('filled');vl.textContent='＋';}
+  }
+}
+function resetMem(){mem[0]=mem[1]=mem[2]=null;updateMemDisplay();}
+
+// ── Keyboard routing ─────────────────────────────────────
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('screen-quiz').classList.contains('active')) return;
+  // If answer input or unit select has focus, let the browser handle it normally
+  const active=document.activeElement;
+  if(active===document.getElementById('ans-inp')) return;
+  if(active===document.getElementById('unit-sel')) return;
+  const k=e.key;
+  if(/^[0-9]$/.test(k)){e.preventDefault();cPush(k);}
+  else if(k==='.'||k===','){e.preventDefault();cPush('.');}
+  else if(k==='+'){e.preventDefault();cPush('+');}
+  else if(k==='-'){e.preventDefault();cPush('-');}
+  else if(k==='*'){e.preventDefault();cPush('*');}
+  else if(k==='/'){e.preventDefault();cPush('/');}
+  else if(k==='('){e.preventDefault();cPush('(');}
+  else if(k===')'){e.preventDefault();cPush(')');}
+  else if(k==='Enter'||k==='='){e.preventDefault();calcEquals();}
+  else if(k==='Backspace'){e.preventDefault();calcBack();}
+  else if(k==='Escape'){e.preventDefault();calcClear();}
+});
+
+// ── Copy result ───────────────────────────────────────────
+function copyResult(){
+  if(!calc.result||calc.result==='–'||calc.result==='Feil') return;
+  navigator.clipboard.writeText(calc.result).catch(()=>{});
+  const btn=document.getElementById('copy-btn');
+  btn.textContent='✓';btn.classList.add('copied');
+  setTimeout(()=>{btn.textContent='📋';btn.classList.remove('copied');},1200);
+}
+
+// ── Navigation ───────────────────────────────────────────
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);
+  el.classList.add('active');
+  window.scrollTo(0,0);
+}
+function goHome(){showScreen('screen-home');}
+function showFormulas(){buildFormulas();showScreen('screen-formulas');}
+
+// Knapper
+document.getElementById('btn-start-quiz')?.addEventListener('click', startQuiz);
+document.getElementById('btn-show-formulas')?.addEventListener('click', showFormulas);
+document.getElementById('btn-new-test')?.addEventListener('click', startQuiz);
+document.getElementById('btn-retry')?.addEventListener('click', retryWrong);
+document.getElementById('btn-results-home')?.addEventListener('click', goHome);
+document.getElementById('btn-formulas-back')?.addEventListener('click', goHome);
+
+// Eksponer funksjoner eksplisitt for miljøer som fortsatt bruker inline events
+window.startQuiz = startQuiz;
+window.showFormulas = showFormulas;
+window.retryWrong = retryWrong;
+window.goHome = goHome;
+window.submitAnswer = submitAnswer;
+window.nextQuestion = nextQuestion;
+window.calcClear = calcClear;
+window.calcBack = calcBack;
+window.calcEquals = calcEquals;
+window.cPush = cPush;
+window.copyResult = copyResult;
+window.memClick = memClick;
+window.memDel = memDel;
+window.showFormula = showFormula;
+window.showSubFormula = showSubFormula;
+
+// Multi-select pills
+document.querySelectorAll('.check-pill').forEach(p=>p.addEventListener('click',()=>p.classList.toggle('checked')));
+// Radio pills (count)
+document.querySelectorAll('#count-group .radio-pill').forEach(p=>p.addEventListener('click',()=>{
+  document.querySelectorAll('#count-group .radio-pill').forEach(q=>q.classList.remove('checked'));
+  p.classList.add('checked');
+}));
+
+// ── Formula page ─────────────────────────────────────────
+// Order: Firkantet prisme, Trekantet prisme, Sylinder (all V=G·h),
+//        then Pyramide, Kjegle, Kule (V=G·h/3)
+// Each figure has subs[] with formula + worked example
+const FORMULA_DATA=[
+  {
+    key:'firkPrisme',
+    name:'Firkantet prisme',
+    svgFn:()=>svgBox({l:'l',b:'b',h:'h'}),
+    vars:[{sym:'l',desc:'lengde'},{sym:'b',desc:'bredde'},{sym:'h',desc:'høyde'},{sym:'G',desc:'grunnflate = l × b'}],
+    subs:[
+      {tag:'V',cls:'v',title:'Volum',
+       formula:'\\[ V = G \\cdot h = l \\cdot b \\cdot h \\]',
+       given:'Eksempel: l = 5, b = 3, h = 4',
+       steps:['\\[ G = l \\cdot b = 5 \\cdot 3 = 15 \\text{ cm}^2 \\]',
+              '\\[ V = G \\cdot h = 15 \\cdot 4 = 60 \\text{ cm}^3 \\]']},
+      {tag:'O',cls:'o',title:'Overflate',
+       formula:'\\[ O = 2(lb + lh + bh) \\]',
+       given:'Eksempel: l = 5, b = 3, h = 4',
+       steps:['\\[ O = 2(5{\\cdot}3 \\;+\\; 5{\\cdot}4 \\;+\\; 3{\\cdot}4) \\]',
+              '\\[ = 2(15 + 20 + 12) = 2 \\cdot 47 = 94 \\text{ cm}^2 \\]']},
+      {tag:'h',cls:'d',title:'Finn h',
+       formula:'\\[ h = \\frac{V}{G} = \\frac{V}{l \\cdot b} \\]',
+       given:'Eksempel: V = 60, l = 5, b = 3',
+       steps:['\\[ G = l \\cdot b = 5 \\cdot 3 = 15 \\text{ cm}^2 \\]',
+              '\\[ h = \\frac{V}{G} = \\frac{60}{15} = 4 \\text{ cm} \\]']},
+    ]
+  },
+  {
+    key:'trekPrisme',
+    name:'Trekantet prisme',
+    svgFn:()=>svgTriPrisme({G:'g',h:'h',l:'l'}),
+    vars:[{sym:'g',desc:'grunnlinje'},{sym:'h',desc:'høyde i trekant'},{sym:'l',desc:'prismets lengde'},{sym:'G',desc:'grunnflate = g·h / 2'},{sym:'c',desc:'hypotenuse'}],
+    subs:[
+      {tag:'V',cls:'v',title:'Volum',
+       formula:'\\[ V = G \\cdot l = \\frac{g \\cdot h \\cdot l}{2} \\]',
+       given:'Eksempel: g = 6, h = 8, l = 5',
+       steps:['\\[ G = \\frac{g \\cdot h}{2} = \\frac{6 \\cdot 8}{2} = 24 \\text{ cm}^2 \\]',
+              '\\[ V = G \\cdot l = 24 \\cdot 5 = 120 \\text{ cm}^3 \\]']},
+      {tag:'c',cls:'o',title:'Hypotenuse c',
+       formula:'\\[ c = \\sqrt{g^2 + h^2} \\]',
+       given:'Eksempel: g = 6, h = 8',
+       steps:['\\[ c = \\sqrt{6^2 + 8^2} = \\sqrt{36 + 64} = \\sqrt{100} = 10 \\text{ cm} \\]']},
+      {tag:'O',cls:'o',title:'Overflate',
+       formula:'\\[ O = (g + h + c) \\cdot l + g \\cdot h \\]',
+       given:'Eksempel: g = 6, h = 8, c = 10, l = 5',
+       steps:['\\[ O = (6 + 8 + 10) \\cdot 5 \\;+\\; 6 \\cdot 8 \\]',
+              '\\[ = 24 \\cdot 5 + 48 = 120 + 48 = 168 \\text{ cm}^2 \\]']},
+      {tag:'h',cls:'d',title:'Finn h',
+       formula:'\\[ h = \\frac{2V}{g \\cdot l} \\]',
+       given:'Eksempel: V = 120, g = 6, l = 5',
+       steps:['\\[ h = \\frac{2 \\cdot 120}{6 \\cdot 5} = \\frac{240}{30} = 8 \\text{ cm} \\]']},
+    ]
+  },
+  {
+    key:'sylinder',
+    name:'Sylinder',
+    svgFn:()=>svgSylinder({r:'r',h:'h'}),
+    vars:[{sym:'r',desc:'radius'},{sym:'h',desc:'høyde'},{sym:'G',desc:'grunnflate = π × r²'}],
+    subs:[
+      {tag:'V',cls:'v',title:'Volum',
+       formula:'\\[ V = G \\cdot h = \\pi r^2 h \\]',
+       given:'Eksempel: r = 3, h = 10',
+       steps:['\\[ G = \\pi r^2 = \\pi \\cdot 9 \\approx 28{,}3 \\text{ cm}^2 \\]',
+              '\\[ V = G \\cdot h = 28{,}3 \\cdot 10 \\approx 283 \\text{ cm}^3 \\]']},
+      {tag:'O',cls:'o',title:'Overflate',
+       formula:'\\[ O = 2\\pi r^2 + 2\\pi r h \\]',
+       given:'Eksempel: r = 3, h = 10',
+       steps:['\\[ O = 2 \\cdot \\pi \\cdot 3^2 + 2 \\cdot \\pi \\cdot 3 \\cdot 10 \\]',
+              '\\[ = 2\\pi \\cdot 9 + 2\\pi \\cdot 30 = 56{,}5 + 188{,}5 \\approx 245 \\text{ cm}^2 \\]']},
+      {tag:'r',cls:'d',title:'Finn r',
+       formula:'\\[ r = \\sqrt{\\frac{V}{\\pi h}} \\]',
+       given:'Eksempel: V = 283, h = 10',
+       steps:['\\[ r = \\sqrt{\\frac{283}{\\pi \\cdot 10}} = \\sqrt{\\frac{283}{31{,}4}} = \\sqrt{9} = 3 \\text{ cm} \\]']},
+      {tag:'h',cls:'d',title:'Finn h',
+       formula:'\\[ h = \\frac{V}{\\pi r^2} \\]',
+       given:'Eksempel: V = 283, r = 3',
+       steps:['\\[ h = \\frac{283}{\\pi \\cdot 9} = \\frac{283}{28{,}3} \\approx 10 \\text{ cm} \\]']},
+    ]
+  },
+  {
+    key:'pyramide',
+    name:'Pyramide',
+    // g = grunnlinje (sidelengde), G = grunnflate = g², h1 = høyde, h2 = høyde i sideflate
+    svgFn:()=>svgPyramide({a:'g',h:'h₁',h2:'h₂'}),
+    vars:[{sym:'g',desc:'grunnlinje (sidelengde)'},{sym:'G',desc:'grunnflate = g²'},{sym:'h₁',desc:'høyde'},{sym:'h₂',desc:'høyde i sideflate (fra midten av side til toppen)'}],
+    subs:[
+      {tag:'V',cls:'v',title:'Volum',
+       formula:'\\[ V = \\frac{G \\cdot h_1}{3} = \\frac{g^2 \\cdot h_1}{3} \\]',
+       given:'Eksempel: g = 6, h₁ = 4',
+       steps:['\\[ G = g^2 = 6^2 = 36 \\text{ cm}^2 \\]',
+              '\\[ V = \\frac{G \\cdot h_1}{3} = \\frac{36 \\cdot 4}{3} = \\frac{144}{3} = 48 \\text{ cm}^3 \\]']},
+      {tag:'h₂',cls:'o',title:'Høyde i sideflate (h₂)',
+       formula:'\\[ h_2 = \\sqrt{\\left(\\frac{g}{2}\\right)^2 + h_1^2} \\]',
+       given:'Eksempel: g = 6, h₁ = 4',
+       steps:['\\[ h_2 = \\sqrt{\\left(\\frac{6}{2}\\right)^2 + 4^2} \\]',
+              '\\[ = \\sqrt{3^2 + 4^2} \\]',
+              '\\[ = \\sqrt{9 + 16} = \\sqrt{25} = 5 \\text{ cm} \\]']},
+      {tag:'O',cls:'o',title:'Overflate',
+       formula:'\\[ O = G + 4 \\cdot \\frac{g \\cdot h_2}{2} = g^2 + 2g h_2 \\]',
+       given:'Eksempel: g = 6, h₂ = 5',
+       steps:['\\[ G = g^2 = 36 \\text{ cm}^2 \\]',
+              '\\[ \\text{4 sideflater: } 4 \\cdot \\frac{g \\cdot h_2}{2} = 4 \\cdot \\frac{6 \\cdot 5}{2} = 4 \\cdot 15 = 60 \\text{ cm}^2 \\]',
+              '\\[ O = 36 + 60 = 96 \\text{ cm}^2 \\]']},
+      {tag:'h₁',cls:'d',title:'Finn h₁',
+       formula:'\\[ h_1 = \\frac{3V}{G} = \\frac{3V}{g^2} \\]',
+       given:'Eksempel: V = 48, g = 6',
+       steps:['\\[ G = g^2 = 36 \\text{ cm}^2 \\]',
+              '\\[ h_1 = \\frac{3V}{G} = \\frac{3 \\cdot 48}{36} = \\frac{144}{36} = 4 \\text{ cm} \\]']},
+    ]
+  },
+  {
+    key:'kjegle',
+    name:'Kjegle',
+    svgFn:()=>svgKjegle({r:'r',h:'h'}),
+    vars:[{sym:'r',desc:'radius'},{sym:'h',desc:'høyde'},{sym:'G',desc:'grunnflate = π × r²'}],
+    subs:[
+      {tag:'V',cls:'v',title:'Volum',
+       formula:'\\[ V = \\frac{G \\cdot h}{3} = \\frac{\\pi r^2 h}{3} \\]',
+       given:'Eksempel: r = 3, h = 4',
+       steps:['\\[ G = \\pi r^2 = \\pi \\cdot 9 \\approx 28{,}3 \\text{ cm}^2 \\]',
+              '\\[ V = \\frac{G \\cdot h}{3} = \\frac{28{,}3 \\cdot 4}{3} \\approx 37{,}7 \\text{ cm}^3 \\]']},
+      {tag:'r',cls:'d',title:'Finn r',
+       formula:'\\[ r = \\sqrt{\\frac{3V}{\\pi h}} \\]',
+       given:'Eksempel: V = 37,7, h = 4',
+       steps:['\\[ r = \\sqrt{\\frac{3 \\cdot 37{,}7}{\\pi \\cdot 4}} = \\sqrt{\\frac{113{,}1}{12{,}57}} = \\sqrt{9} = 3 \\text{ cm} \\]']},
+      {tag:'h',cls:'d',title:'Finn h',
+       formula:'\\[ h = \\frac{3V}{\\pi r^2} \\]',
+       given:'Eksempel: V = 37,7, r = 3',
+       steps:['\\[ h = \\frac{3 \\cdot 37{,}7}{\\pi \\cdot 9} = \\frac{113{,}1}{28{,}3} \\approx 4 \\text{ cm} \\]']},
+    ]
+  },
+  {
+    key:'kule',
+    name:'Kule',
+    svgFn:()=>svgKule({r:'r'}),
+    vars:[{sym:'r',desc:'radius'}],
+    subs:[
+      {tag:'V',cls:'v',title:'Volum',
+       formula:'\\[ V = \\frac{4\\pi r^3}{3} \\]',
+       given:'Eksempel: r = 3',
+       steps:['\\[ V = \\frac{4 \\cdot \\pi \\cdot 3^3}{3} = \\frac{4\\pi \\cdot 27}{3} = 36\\pi \\approx 113{,}1 \\text{ cm}^3 \\]']},
+      {tag:'O',cls:'o',title:'Overflate',
+       formula:'\\[ O = 4\\pi r^2 \\]',
+       given:'Eksempel: r = 3',
+       steps:['\\[ O = 4 \\cdot \\pi \\cdot 3^2 = 4\\pi \\cdot 9 = 36\\pi \\approx 113{,}1 \\text{ cm}^2 \\]']},
+    ]
+  },
+];
+
+let formulaBuilt=false;
+let curFig=0, curSub=0;
+
+function buildFormulas(){
+  if(formulaBuilt) return;
+  formulaBuilt=true;
+  const nav=document.getElementById('form-nav');
+  nav.innerHTML=FORMULA_DATA.map((d,i)=>
+    `<button class="form-nav-btn${i===0?' active':''}" onclick="showFormula(${i})">${d.name}</button>`
+  ).join('');
+  showFormula(0);
+}
+
+function showFormula(idx){
+  curFig=idx; curSub=0;
+  document.querySelectorAll('.form-nav-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  const d=FORMULA_DATA[idx];
+  const varHtml=d.vars.map(v=>`<span><b>${v.sym}</b> = ${v.desc}</span>`).join('');
+  const subBtns=d.subs.map((s,i)=>
+    `<button class="sub-btn ${s.cls}${i===0?' active':''}" onclick="showSubFormula(${idx},${i})">${s.title}</button>`
+  ).join('');
+  const content=document.getElementById('form-content');
+  content.innerHTML=`
+    <div class="form-fig-wrap">${d.svgFn()}</div>
+    <div class="form-var-legend">${varHtml}</div>
+    <div class="sub-row" id="sub-row">${subBtns}</div>
+    <div id="sub-display"></div>`;
+  renderSub(idx, 0);
+}
+
+function showSubFormula(figIdx, subIdx){
+  curFig=figIdx; curSub=subIdx;
+  document.querySelectorAll('.sub-btn').forEach((b,i)=>{
+    b.classList.remove('active');
+    if(i===subIdx) b.classList.add('active');
+  });
+  renderSub(figIdx, subIdx);
+}
+
+function renderSub(figIdx, subIdx){
+  const s=FORMULA_DATA[figIdx].subs[subIdx];
+  const stepsHtml=s.steps.map(st=>`<div class="utregning-step">${st}</div>`).join('');
+  const html=`
+    <div class="form-formula-box">${s.formula}</div>
+    <div class="utregning">
+      <div class="utregning-hdr">📝 Utregning</div>
+      <div class="utregning-given">${s.given}</div>
+      ${stepsHtml}
+    </div>`;
+  const disp=document.getElementById('sub-display');
+  disp.innerHTML=html;
+  if(window.MathJax&&MathJax.typesetPromise){
+    MathJax.typesetPromise([disp]).catch(e=>console.warn('MathJax:',e));
+  }
+}
+</script>
+</body>
+</html>
